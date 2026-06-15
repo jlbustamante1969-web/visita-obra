@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Visita Obra">
+<title>Visita de Obra</title>
+<style>
+  :root {
+    --naranja: #C85A1A;
+    --naranja-claro: #F4E8DF;
+    --naranja-borde: #E8A07A;
+    --gris-bg: #F7F6F3;
+    --gris-borde: #E0DDD7;
+    --gris-texto: #6B6860;
+    --negro: #1A1916;
+    --blanco: #FFFFFF;
+    --verde: #2D7A4F;
+    --verde-bg: #E8F5EE;
+    --rojo: #C0392B;
+    --rojo-bg: #FDECEA;
+    --radio: 10px;
+    --radio-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--gris-bg); color: var(--negro); min-height: 100vh; padding-bottom: 2.5rem; }
+
+  /* Header */
+  header { background: var(--blanco); border-bottom: 1px solid var(--gris-borde); padding: 0.9rem 1.25rem; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
+  .hdr-icon { width: 38px; height: 38px; background: var(--naranja); border-radius: var(--radio); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .hdr-icon svg { width: 20px; height: 20px; fill: white; }
+  .hdr-text h1 { font-size: 16px; font-weight: 600; color: var(--negro); }
+  .hdr-text p  { font-size: 11px; color: var(--gris-texto); margin-top: 1px; }
+
+  .main { padding: 1rem; display: flex; flex-direction: column; gap: 12px; }
+
+  /* Cards */
+  .card { background: var(--blanco); border: 1px solid var(--gris-borde); border-radius: var(--radio-lg); padding: 1rem 1.125rem; }
+  .clabel { font-size: 11px; font-weight: 600; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .clabel svg { width: 13px; height: 13px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* Config */
+  .cfg { background: var(--naranja-claro); border: 1px solid var(--naranja-borde); border-radius: var(--radio-lg); padding: 1rem 1.125rem; }
+  .cfg h2 { font-size: 14px; font-weight: 600; color: var(--naranja); margin-bottom: 4px; }
+  .cfg-desc { font-size: 12px; color: var(--gris-texto); margin-bottom: 14px; line-height: 1.6; }
+  .cfg-desc a { color: var(--naranja); }
+  .flabel { font-size: 12px; font-weight: 600; color: var(--negro); margin-bottom: 4px; display: block; }
+  .fhint  { font-size: 11px; color: var(--gris-texto); margin-top: 3px; margin-bottom: 12px; line-height: 1.5; }
+  .fhint a { color: var(--naranja); }
+
+  input[type=password], input[type=text], select, textarea {
+    width: 100%; font-family: inherit; font-size: 15px; color: var(--negro);
+    background: var(--blanco); border: 1px solid var(--gris-borde);
+    border-radius: var(--radio); padding: 9px 12px; outline: none;
+    -webkit-appearance: none; appearance: none; transition: border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--naranja); }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6860' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    background-color: var(--blanco); padding-right: 36px;
+  }
+
+  /* Buttons */
+  .btn { width: 100%; padding: 11px; border: none; border-radius: var(--radio); font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; -webkit-tap-highlight-color: transparent; transition: opacity .15s; }
+  .btn:active { opacity: 0.82; }
+  .btn-orange { background: var(--naranja); color: white; margin-top: 6px; }
+  .btn-dark   { background: var(--negro); color: white; padding: 13px; font-size: 16px; border-radius: var(--radio-lg); }
+  .btn-dark:disabled { opacity: .28; cursor: not-allowed; }
+  .btn-ghost  { background: none; border: 1.5px dashed var(--gris-borde); color: var(--gris-texto); font-size: 13px; padding: 9px; display: none; align-items: center; }
+  .btn-ghost:active { background: var(--gris-bg); }
+
+  .cfg-ok { font-size: 12px; color: var(--verde); margin-top: 8px; text-align: center; display: none; }
+
+  /* App */
+  .app { display: none; flex-direction: column; gap: 12px; }
+  .app.on { display: flex; }
+
+  /* Drive path */
+  .dpath { font-size: 12px; color: var(--gris-texto); margin-top: 8px; padding: 6px 10px; background: var(--naranja-claro); border-radius: 6px; display: none; word-break: break-all; line-height: 1.5; }
+  .dpath strong { color: var(--naranja); }
+
+  /* Camera area */
+  .cam { border: 2px dashed var(--gris-borde); border-radius: var(--radio); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; position: relative; -webkit-tap-highlight-color: transparent; }
+  .cam:active { background: var(--naranja-claro); border-color: var(--naranja-borde); }
+  .cam input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; font-size: 0; }
+  .cam svg { width: 38px; height: 38px; stroke: var(--gris-texto); fill: none; stroke-width: 1.5; }
+  .cam-h  { font-size: 14px; font-weight: 600; color: var(--negro); }
+  .cam-sh { font-size: 12px; color: var(--gris-texto); }
+
+  /* Pending */
+  .pend { display: none; margin-top: 12px; padding: 12px; background: var(--naranja-claro); border-radius: var(--radio); border: 1px solid var(--naranja-borde); }
+  .pend img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+  .pend-lbl { font-size: 11px; font-weight: 700; color: var(--naranja); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  textarea { min-height: 64px; resize: vertical; line-height: 1.5; font-size: 14px; }
+
+  /* Photo list */
+  .photos { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .pitem { display: flex; gap: 10px; align-items: flex-start; background: var(--gris-bg); border-radius: var(--radio); padding: 8px; }
+  .pthumb { width: 58px; height: 58px; object-fit: cover; border-radius: 7px; flex-shrink: 0; border: 1px solid var(--gris-borde); }
+  .pmeta { flex: 1; min-width: 0; }
+  .pfname { font-size: 11px; color: var(--gris-texto); word-break: break-all; font-family: monospace; margin-bottom: 3px; }
+  .pdesc  { font-size: 13px; color: var(--negro); line-height: 1.4; }
+  .pnodesc { font-size: 13px; color: var(--gris-texto); font-style: italic; }
+  .pbadge { display: inline-flex; align-items: center; justify-content: center; background: var(--naranja); color: white; font-size: 11px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; margin-left: 6px; }
+  .premove { background: none; border: none; color: var(--rojo); font-size: 12px; cursor: pointer; margin-top: 4px; padding: 0; }
+
+  /* Status */
+  .status { display: none; padding: 10px 14px; border-radius: var(--radio); font-size: 14px; font-weight: 500; margin-top: 10px; text-align: center; line-height: 1.5; }
+  .status.loading { display: block; background: var(--gris-bg); color: var(--gris-texto); border: 1px solid var(--gris-borde); }
+  .status.ok  { display: block; background: var(--verde-bg); color: var(--verde); border: 1px solid #A8D5BC; }
+  .status.err { display: block; background: var(--rojo-bg); color: var(--rojo); border: 1px solid #F1B0AA; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -2px; margin-right: 5px; }
+
+  .lnk { font-size: 12px; color: var(--gris-texto); text-align: center; margin-top: 2px; cursor: pointer; text-decoration: underline; }
+  .btn-nueva { width: 100%; padding: 11px; background: none; border: 1px solid var(--gris-borde); border-radius: var(--radio); font-size: 14px; color: var(--gris-texto); cursor: pointer; margin-top: 8px; display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-icon">
+    <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 3l5 4-5 4V6zm-1 9H6V9h5v6z"/></svg>
+  </div>
+  <div class="hdr-text">
+    <h1>Visita de obra</h1>
+    <p>Bustamante · Levante y Terral</p>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- ── CONFIGURACIÓN ─────────────────────────────────── -->
+  <div class="cfg" id="cfg">
+    <h2>⚙️ Configuración inicial</h2>
+    <p class="cfg-desc">Solo hay que hacer esto una vez. Los datos se guardan en este dispositivo.</p>
+
+    <label class="flabel">Notion Integration Token</label>
+    <input type="password" id="in-notion" placeholder="secret_… o ntn_…" autocomplete="off" spellcheck="false">
+    <p class="fhint">
+      <a href="https://www.notion.so/profile/integrations" target="_blank">notion.so → Mis conexiones → Nueva integración interna</a><br>
+      Copia el Token interno. Asegúrate de que la integración tiene acceso a tu base de datos OBRAS.
+    </p>
+
+    <label class="flabel">URL del Apps Script (Drive)</label>
+    <input type="text" id="in-script" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false">
+    <p class="fhint">
+      Instala el archivo <strong>VisitaObra_DriveScript.gs</strong> en
+      <a href="https://script.google.com" target="_blank">script.google.com</a>,
+      impleméntalo como aplicación web y pega aquí la URL /exec que te da.
+    </p>
+
+    <button class="btn btn-orange" onclick="guardar()">Guardar y empezar →</button>
+    <p class="cfg-ok" id="cfg-ok">✓ Guardado correctamente</p>
+  </div>
+
+  <!-- ── APP PRINCIPAL ─────────────────────────────────── -->
+  <div class="app" id="app">
+
+    <!-- Obra -->
+    <div class="card">
+      <div class="clabel">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Obra
+      </div>
+      <select id="obra-sel" onchange="onObra()">
+        <option value="">Cargando obras…</option>
+      </select>
+      <div class="dpath" id="dpath">📁 <strong id="dpath-txt"></strong></div>
+    </div>
+
+    <!-- Fotos -->
+    <div class="card">
+      <div class="clabel">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Fotos
+        <span class="pbadge" id="badge" style="display:none">0</span>
+      </div>
+
+      <div class="cam" id="cam">
+        <input type="file" id="file-in" accept="image/*" capture="environment" onchange="onFile(event)">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+        <div class="cam-h">Hacer foto</div>
+        <div class="cam-sh">o seleccionar de la galería</div>
+      </div>
+
+      <div class="pend" id="pend">
+        <img id="prev" src="" alt="Vista previa">
+        <div class="pend-lbl">Descripción de esta foto</div>
+        <textarea id="desc-in" placeholder="Ej: Encuentro pared norte con forjado, pendiente de armado…"></textarea>
+        <button class="btn btn-orange" onclick="addPhoto()">✓ Añadir a la visita</button>
+      </div>
+
+      <div class="photos" id="photos"></div>
+      <button class="btn btn-ghost" id="btn-more" onclick="document.getElementById('file-in').click()">+ Añadir otra foto</button>
+    </div>
+
+    <!-- Subir -->
+    <div class="card">
+      <div class="clabel">
+        <svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+        Subir a Google Drive
+      </div>
+      <button class="btn btn-dark" id="btn-sub" disabled onclick="subir()">↑ Subir fotos</button>
+      <div class="status" id="st"></div>
+      <button class="btn-nueva" id="btn-nueva" onclick="nueva()">Empezar nueva visita</button>
+    </div>
+
+    <p class="lnk" onclick="verCfg()">Cambiar configuración</p>
+  </div>
+
+</div>
+
+<script>
+const OBRAS_DB = "6e9b348b-09cf-42c3-8160-8daf4072b5b3";
+const SK = "vob_cfg_v2";
+
+let cfg = {};
+let obras = [];
+let pFile = null, pURL = null;
+let photos = [];
+
+// ── Configuración ─────────────────────────────────────────
+function guardar() {
+  const notion = document.getElementById("in-notion").value.trim();
+  const script = document.getElementById("in-script").value.trim();
+  if (!notion || (!notion.startsWith("secret_") && !notion.startsWith("ntn_"))) {
+    alert("El token de Notion debe empezar por secret_… o ntn_…"); return;
+  }
+  if (!script.includes("script.google.com")) {
+    alert("La URL del Apps Script no parece correcta. Debe ser una URL de script.google.com/macros/…/exec"); return;
+  }
+  cfg = { notion, script };
+  localStorage.setItem(SK, JSON.stringify(cfg));
+  document.getElementById("cfg-ok").style.display = "block";
+  setTimeout(() => {
+    document.getElementById("cfg").style.display = "none";
+    document.getElementById("app").classList.add("on");
+    loadObras();
+  }, 700);
+}
+
+function verCfg() {
+  document.getElementById("in-notion").value = cfg.notion || "";
+  document.getElementById("in-script").value = cfg.script || "";
+  document.getElementById("cfg-ok").style.display = "none";
+  document.getElementById("cfg").style.display = "block";
+  document.getElementById("app").classList.remove("on");
+}
+
+// ── Cargar obras desde Notion ─────────────────────────────
+async function loadObras() {
+  const sel = document.getElementById("obra-sel");
+  sel.innerHTML = "<option>Cargando…</option>";
+  try {
+    const r = await fetch(`https://api.notion.com/v1/databases/${OBRAS_DB}/query`, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + cfg.notion,
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        filter: { property: "Estado", status: { equals: "En ejeucion" } },
+        sorts: [{ property: "Nombre OBRA", direction: "ascending" }]
+      })
+    });
+    if (!r.ok) throw new Error("Notion " + r.status + " — revisa el token y los permisos de la integración");
+    const data = await r.json();
+    obras = (data.results || []).map(p => ({
+      id: p.id,
+      nombre: p.properties?.["Nombre OBRA"]?.title?.[0]?.plain_text || "(sin nombre)"
+    })).filter(o => o.nombre !== "(sin nombre)");
+
+    if (obras.length === 0) {
+      sel.innerHTML = "<option value=''>Sin obras en ejecución</option>";
+    } else {
+      sel.innerHTML = "<option value=''>— Selecciona una obra —</option>" +
+        obras.map(o => `<option value="${o.id}" data-n="${encodeURIComponent(o.nombre)}">${o.nombre}</option>`).join("");
+    }
+  } catch(e) {
+    sel.innerHTML = "<option value=''>Error al cargar obras</option>";
+    setStatus("err", "❌ " + e.message);
+  }
+}
+
+function onObra() {
+  const sel = document.getElementById("obra-sel");
+  const opt = sel.options[sel.selectedIndex];
+  const nombre = opt.dataset?.n ? decodeURIComponent(opt.dataset.n) : "";
+  const hoy = new Date().toISOString().slice(0, 10);
+  if (nombre) {
+    document.getElementById("dpath").style.display = "block";
+    document.getElementById("dpath-txt").textContent = `Visitas de Obra / ${nombre} / ${hoy}`;
+  } else {
+    document.getElementById("dpath").style.display = "none";
+  }
+  updBtn();
+}
+
+// ── Fotos ─────────────────────────────────────────────────
+function onFile(e) {
+  const f = e.target.files[0]; if (!f) return;
+  pFile = f;
+  const rd = new FileReader();
+  rd.onload = ev => {
+    pURL = ev.target.result;
+    document.getElementById("prev").src = pURL;
+    document.getElementById("desc-in").value = "";
+    document.getElementById("pend").style.display = "block";
+    document.getElementById("desc-in").focus();
+  };
+  rd.readAsDataURL(f);
+  e.target.value = "";
+}
+
+function fname(f, i) {
+  const ts = new Date().toISOString().slice(0, 19).replace("T", "_").replace(/:/g, "-");
+  const ext = (f.name.split(".").pop() || "jpg").toLowerCase();
+  return `${ts}_${String(i+1).padStart(2,"0")}.${ext}`;
+}
+
+function addPhoto() {
+  if (!pFile) return;
+  photos.push({ file: pFile, url: pURL, desc: document.getElementById("desc-in").value.trim() });
+  document.getElementById("pend").style.display = "none";
+  pFile = null; pURL = null;
+  renderPhotos();
+  document.getElementById("btn-more").style.display = "flex";
+  updBtn();
+}
+
+function rmPhoto(i) {
+  photos.splice(i, 1); renderPhotos();
+  if (!photos.length) document.getElementById("btn-more").style.display = "none";
+  updBtn();
+}
+
+function renderPhotos() {
+  const list = document.getElementById("photos");
+  const badge = document.getElementById("badge");
+  if (!photos.length) { list.innerHTML = ""; badge.style.display = "none"; return; }
+  badge.style.display = "inline-flex";
+  badge.textContent = photos.length;
+  list.innerHTML = photos.map((p,i) => `
+    <div class="pitem">
+      <img class="pthumb" src="${p.url}" alt="">
+      <div class="pmeta">
+        <div class="pfname">${fname(p.file,i)}</div>
+        ${p.desc ? `<div class="pdesc">${p.desc}</div>` : `<div class="pnodesc">Sin descripción</div>`}
+        <button class="premove" onclick="rmPhoto(${i})">✕ Quitar</button>
+      </div>
+    </div>`).join("");
+}
+
+function updBtn() {
+  const ok = document.getElementById("obra-sel").value && photos.length > 0;
+  document.getElementById("btn-sub").disabled = !ok;
+}
+
+// ── Subir a Drive vía Apps Script ─────────────────────────
+async function subir() {
+  const sel  = document.getElementById("obra-sel");
+  const opt  = sel.options[sel.selectedIndex];
+  const obra = opt.dataset?.n ? decodeURIComponent(opt.dataset.n) : "Obra";
+  const hoy  = new Date().toISOString().slice(0, 10);
+
+  document.getElementById("btn-sub").disabled = true;
+  document.getElementById("btn-nueva").style.display = "none";
+  setStatus("loading", `<span class="spin"></span> Subiendo ${photos.length} foto(s) a Drive…`);
+
+  try {
+    const fotos = photos.map((p, i) => ({
+      nombre: fname(p.file, i),
+      base64: p.url.split(",")[1],
+      mime:   p.file.type || "image/jpeg",
+      desc:   p.desc || ""
+    }));
+
+    const body = JSON.stringify({ obra, fecha: hoy, fotos });
+
+    const r = await fetch(cfg.script, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body
+    });
+
+    const txt = await r.text();
+    let res;
+    try { res = JSON.parse(txt); } catch(e) { throw new Error("Respuesta inesperada del script: " + txt.slice(0,100)); }
+
+    if (res.ok) {
+      const link = res.carpeta
+        ? `<br><a href="${res.carpeta}" target="_blank" style="color:var(--verde)">Ver carpeta en Drive ↗</a>`
+        : "";
+      setStatus("ok", `✓ ${fotos.length} foto(s) subidas correctamente${link}`);
+      photos = []; renderPhotos();
+      document.getElementById("btn-more").style.display = "none";
+      document.getElementById("btn-nueva").style.display = "block";
+    } else {
+      throw new Error(res.error || "Error desconocido en el script");
+    }
+  } catch(e) {
+    setStatus("err", "❌ " + e.message);
+    document.getElementById("btn-sub").disabled = false;
+  }
+}
+
+function setStatus(type, html) {
+  const el = document.getElementById("st");
+  el.className = "status " + type;
+  el.innerHTML = html;
+}
+
+function nueva() {
+  photos = []; renderPhotos();
+  document.getElementById("btn-more").style.display = "none";
+  document.getElementById("btn-nueva").style.display = "none";
+  document.getElementById("st").className = "status";
+  document.getElementById("obra-sel").value = "";
+  document.getElementById("dpath").style.display = "none";
+  updBtn();
+}
+
+// ── Init ──────────────────────────────────────────────────
+(function() {
+  try {
+    const s = localStorage.getItem(SK);
+    if (s) {
+      cfg = JSON.parse(s);
+      if (cfg.notion && cfg.script) {
+        document.getElementById("cfg").style.display = "none";
+        document.getElementById("app").classList.add("on");
+        loadObras();
+        return;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
