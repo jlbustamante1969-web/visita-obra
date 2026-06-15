@@ -1,0 +1,31 @@
+{
+  "name": "Visita de Obra",
+  "short_name": "Visita Obra",
+  "description": "Sube fotos de visitas de obra a Google Drive, organizadas por obra desde Notion",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F6F3",
+  "theme_color": "#C85A1A",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
