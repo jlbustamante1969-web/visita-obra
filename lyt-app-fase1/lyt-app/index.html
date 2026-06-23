@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F6E56" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LyT" />
+  <title>Levante y Terral</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal-dark:   #085041;
+      --teal-mid:    #0F6E56;
+      --teal-soft:   #1D9E75;
+      --teal-light:  #9FE1CB;
+      --teal-pale:   #E1F5EE;
+      --amber-dark:  #854F0B;
+      --amber-mid:   #BA7517;
+      --amber-light: #FAEEDA;
+      --blue-dark:   #185FA5;
+      --blue-light:  #E6F1FB;
+      --coral-dark:  #993C1D;
+      --coral-light: #FAECE7;
+      --purple-dark: #534AB7;
+      --purple-light:#EEEDFE;
+      --gray-dark:   #444441;
+      --gray-mid:    #888780;
+      --gray-light:  #F1EFE8;
+      --text-1:      #1a1a18;
+      --text-2:      #5F5E5A;
+      --text-3:      #888780;
+      --bg:          #F7F6F2;
+      --surface:     #FFFFFF;
+      --border:      rgba(0,0,0,0.08);
+      --border-mid:  rgba(0,0,0,0.13);
+      --radius-sm:   8px;
+      --radius-md:   12px;
+      --radius-lg:   16px;
+      --safe-top:    env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── VISTAS ─────────────────────────────────── */
+    .view { display: none; min-height: 100dvh; flex-direction: column; }
+    .view.active { display: flex; }
+
+    /* ── TOPBAR ─────────────────────────────────── */
+    .topbar {
+      background: var(--teal-dark);
+      color: white;
+      padding: calc(var(--safe-top) + 14px) 16px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-back {
+      background: none;
+      border: none;
+      color: var(--teal-light);
+      font-size: 15px;
+      padding: 4px 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+    .topbar-sub   { font-size: 11px; color: var(--teal-light); margin-top: 1px; }
+    .topbar-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--teal-soft);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; color: var(--teal-dark);
+      flex-shrink: 0;
+    }
+
+    /* ── SCROLL AREA ────────────────────────────── */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: calc(var(--safe-bottom) + 80px);
+    }
+
+    /* ── STATS ──────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 16px 16px 0;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+    .stat-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-size: 22px; font-weight: 600; color: var(--text-1); line-height: 1; }
+    .stat-sub   { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+    /* ── SECCIÓN ────────────────────────────────── */
+    .section-header {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 20px 16px 8px;
+    }
+
+    /* ── MÓDULOS ────────────────────────────────── */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 16px;
+    }
+    .module-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .module-card:active { transform: scale(0.97); }
+    .module-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .mod-teal   { background: var(--teal-pale);   color: var(--teal-mid);   }
+    .mod-amber  { background: var(--amber-light);  color: var(--amber-dark); }
+    .mod-blue   { background: var(--blue-light);   color: var(--blue-dark);  }
+    .mod-coral  { background: var(--coral-light);  color: var(--coral-dark); }
+    .mod-purple { background: var(--purple-light); color: var(--purple-dark);}
+    .mod-gray   { background: var(--gray-light);   color: var(--gray-dark);  }
+    .module-name { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 3px; }
+    .module-desc { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+    .module-badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 99px;
+      margin-top: 8px;
+    }
+    .badge-ok     { background: var(--teal-pale);   color: var(--teal-mid);   }
+    .badge-soon   { background: var(--gray-light);   color: var(--gray-mid);   }
+
+    /* ── AÑADIR MÓDULO ──────────────────────────── */
+    .add-module-btn {
+      margin: 10px 16px 0;
+      border: 1px dashed var(--border-mid);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text-3);
+      font-size: 13px;
+      cursor: pointer;
+      width: calc(100% - 32px);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .add-module-btn:active { background: rgba(0,0,0,0.03); }
+
+    /* ── ACTIVIDAD ──────────────────────────────── */
+    .activity-list { padding: 0 16px; }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-top: 5px; flex-shrink: 0;
+    }
+    .dot-teal   { background: var(--teal-soft); }
+    .dot-amber  { background: var(--amber-mid); }
+    .dot-blue   { background: var(--blue-dark); }
+    .activity-text { font-size: 13px; color: var(--text-1); line-height: 1.4; }
+    .activity-time { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+    /* ── NAV BAR ────────────────────────────────── */
+    .nav-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      padding-bottom: var(--safe-bottom);
+      z-index: 20;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 8px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      border: none;
+      background: none;
+      gap: 3px;
+    }
+    .nav-icon { font-size: 22px; color: var(--text-3); transition: color 0.15s; }
+    .nav-label { font-size: 10px; color: var(--text-3); transition: color 0.15s; letter-spacing: 0.02em; }
+    .nav-item.active .nav-icon,
+    .nav-item.active .nav-label { color: var(--teal-mid); }
+
+    /* ── VISTAS DE MÓDULO ───────────────────────── */
+    .module-header {
+      padding: 20px 16px 16px;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--surface);
+    }
+    .module-header-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .module-header-title { font-size: 20px; font-weight: 700; color: var(--text-1); }
+    .module-header-desc  { font-size: 13px; color: var(--text-2); margin-top: 4px; line-height: 1.5; }
+
+    .coming-soon-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      gap: 12px;
+    }
+    .coming-soon-icon { font-size: 48px; }
+    .coming-soon-title { font-size: 18px; font-weight: 600; color: var(--text-1); }
+    .coming-soon-desc  { font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 280px; }
+
+    /* ── AJUSTES ────────────────────────────────── */
+    .settings-list { padding: 0 16px; }
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 0.5px solid var(--border);
+      cursor: pointer;
+    }
+    .settings-item:last-child { border-bottom: none; }
+    .settings-item-left { display: flex; align-items: center; gap: 12px; }
+    .settings-item-icon {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .settings-label { font-size: 14px; color: var(--text-1); }
+    .settings-value { font-size: 13px; color: var(--text-3); }
+    .settings-chevron { font-size: 18px; color: var(--text-3); }
+
+    .profile-card {
+      margin: 16px;
+      background: var(--teal-dark);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      color: white;
+    }
+    .profile-name  { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+    .profile-role  { font-size: 12px; color: var(--teal-light); }
+    .profile-pills { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .profile-pill  {
+      font-size: 11px; font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.12);
+      color: var(--teal-light);
+    }
+
+    /* ── DIVIDER ────────────────────────────────── */
+    .divider { height: 0.5px; background: var(--border); margin: 4px 0; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     VISTA: INICIO
+════════════════════════════════════════════════ -->
+<div class="view active" id="view-home">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Levante y Terral</div>
+      <div class="topbar-sub">Panel de gestión</div>
+    </div>
+    <div class="topbar-avatar">JL</div>
+  </div>
+
+  <div class="scroll-area">
+
+    <!-- Stats rápidos -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Obras activas</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">desde Notion</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Última factura</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">pendiente sync</div>
+      </div>
+    </div>
+
+    <!-- Módulos activos -->
+    <div class="section-header">Módulos activos</div>
+    <div class="modules-grid">
+
+      <div class="module-card" onclick="openModule('facturas')">
+        <div class="module-icon mod-teal">🧾</div>
+        <div class="module-name">Facturas</div>
+        <div class="module-desc">Genera PDFs A y B</div>
+        <span class="module-badge badge-ok">Activo</span>
+      </div>
+
+      <div class="module-card" onclick="openModule('extracto')">
+        <div class="module-icon mod-amber">🏦</div>
+        <div class="module-name">Extracto banco</div>
+        <div class="module-desc">CAJAMAR → Notion</div>
+        <span class="module-badge badge-ok">Activo</span>
+      </div>
+
+      <div class="module-card" onclick="openModule('visita')">
+        <div class="module-icon mod-blue">📷</div>
+        <div class="module-name">Visita obra</div>
+        <div class="module-desc">Fotos → Drive</div>
+        <span class="module-badge badge-ok">Activo</span>
+      </div>
+
+      <div class="module-card" onclick="openModule('obras')">
+        <div class="module-icon mod-coral">🏗️</div>
+        <div class="module-name">Obras</div>
+        <div class="module-desc">Estado y seguimiento</div>
+        <span class="module-badge badge-soon">Próximo</span>
+      </div>
+
+    </div>
+
+    <button class="add-module-btn" onclick="openModule('nuevo')">
+      ＋ &nbsp;Añadir módulo
+    </button>
+
+    <!-- Actividad reciente -->
+    <div class="section-header">Actividad reciente</div>
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-dot dot-teal"></div>
+        <div>
+          <div class="activity-text">Extracto CAJAMAR procesado</div>
+          <div class="activity-time">Hoy · 10:32</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot dot-blue"></div>
+        <div>
+          <div class="activity-text">Visita obra · C/ Cáceres · 4 fotos</div>
+          <div class="activity-time">Ayer · 16:15</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot dot-amber"></div>
+        <div>
+          <div class="activity-text">Factura LyT 2026/2T/10 generada</div>
+          <div class="activity-time">Hace 3 días</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+</div><!-- /view-home -->
+
+
+<!-- ═══════════════════════════════════════════════
+     VISTA: FACTURAS
+════════════════════════════════════════════════ -->
+<div class="view" id="view-facturas">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack()">← Inicio</button>
+    <div class="topbar-title">Facturas</div>
+    <div style="width:56px"></div>
+  </div>
+  <div class="scroll-area">
+    <div class="module-header">
+      <div class="module-header-icon mod-teal">🧾</div>
+      <div class="module-header-title">Facturas</div>
+      <div class="module-header-desc">Genera facturas en PDF para Levante y Terral (plantilla B) o para tu práctica de arquitecto (plantilla A), directamente desde Notion.</div>
+    </div>
+    <div class="coming-soon-body">
+      <div class="coming-soon-icon">🛠️</div>
+      <div class="coming-soon-title">Módulo en construcción</div>
+      <div class="coming-soon-desc">El formulario de facturas estará disponible en la Fase 2. Mientras tanto, usa el Proyecto de Claude como siempre.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     VISTA: EXTRACTO
+════════════════════════════════════════════════ -->
+<div class="view" id="view-extracto">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack()">← Inicio</button>
+    <div class="topbar-title">Extracto banco</div>
+    <div style="width:56px"></div>
+  </div>
+  <div class="scroll-area">
+    <div class="module-header">
+      <div class="module-header-icon mod-amber">🏦</div>
+      <div class="module-header-title">Extracto CAJAMAR</div>
+      <div class="module-header-desc">Sube un PDF del extracto bancario y los movimientos se sincronizan automáticamente en la base de datos de Notion, sin duplicados.</div>
+    </div>
+    <div class="coming-soon-body">
+      <div class="coming-soon-icon">🛠️</div>
+      <div class="coming-soon-title">Módulo en construcción</div>
+      <div class="coming-soon-desc">El uploader de extractos estará disponible en la Fase 2. Mientras tanto, usa el Proyecto de Claude como siempre.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     VISTA: VISITA OBRA
+════════════════════════════════════════════════ -->
+<div class="view" id="view-visita">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack()">← Inicio</button>
+    <div class="topbar-title">Visita obra</div>
+    <div style="width:56px"></div>
+  </div>
+  <div class="scroll-area">
+    <div class="module-header">
+      <div class="module-header-icon mod-blue">📷</div>
+      <div class="module-header-title">Visita de obra</div>
+      <div class="module-header-desc">Haz fotos en obra. Se suben automáticamente a Google Drive organizadas por obra y fecha.</div>
+    </div>
+    <div class="coming-soon-body">
+      <div class="coming-soon-icon">🔄</div>
+      <div class="coming-soon-title">Migrando desde la app actual</div>
+      <div class="coming-soon-desc">Este módulo está adaptando la PWA existente de Visita Obra al nuevo panel. Estará listo en la Fase 2.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     VISTA: OBRAS
+════════════════════════════════════════════════ -->
+<div class="view" id="view-obras">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack()">← Inicio</button>
+    <div class="topbar-title">Obras</div>
+    <div style="width:56px"></div>
+  </div>
+  <div class="scroll-area">
+    <div class="module-header">
+      <div class="module-header-icon mod-coral">🏗️</div>
+      <div class="module-header-title">Obras</div>
+      <div class="module-header-desc">Seguimiento de obras activas, certificaciones y estado de trabajos desde Notion.</div>
+    </div>
+    <div class="coming-soon-body">
+      <div class="coming-soon-icon">📋</div>
+      <div class="coming-soon-title">Próximamente</div>
+      <div class="coming-soon-desc">El módulo de obras conectará con tu base de datos OBRAS (BD) de Notion para ver el estado en tiempo real.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     VISTA: NUEVO MÓDULO
+════════════════════════════════════════════════ -->
+<div class="view" id="view-nuevo">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack()">← Inicio</button>
+    <div class="topbar-title">Añadir módulo</div>
+    <div style="width:56px"></div>
+  </div>
+  <div class="scroll-area">
+    <div class="section-header">Módulos disponibles</div>
+    <div class="modules-grid">
+      <div class="module-card">
+        <div class="module-icon mod-coral">📋</div>
+        <div class="module-name">Obras</div>
+        <div class="module-desc">Seguimiento desde Notion</div>
+        <span class="module-badge badge-soon">Próximo</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon mod-purple">📊</div>
+        <div class="module-name">Certificaciones</div>
+        <div class="module-desc">Cert. de obra por tajo</div>
+        <span class="module-badge badge-soon">Próximo</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon mod-teal">📁</div>
+        <div class="module-name">Presupuestos</div>
+        <div class="module-desc">Genera y gestiona</div>
+        <span class="module-badge badge-soon">Próximo</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon mod-gray">🦺</div>
+        <div class="module-name">PRL</div>
+        <div class="module-desc">Documentación PREVETEC</div>
+        <span class="module-badge badge-soon">Próximo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     VISTA: AJUSTES
+════════════════════════════════════════════════ -->
+<div class="view" id="view-ajustes">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Ajustes</div>
+    </div>
+    <div class="topbar-avatar">JL</div>
+  </div>
+  <div class="scroll-area">
+
+    <div class="profile-card">
+      <div class="profile-name">José Luis Bustamante Ibáñez</div>
+      <div class="profile-role">Arquitecto · Colegiado nº 685</div>
+      <div class="profile-pills">
+        <span class="profile-pill">Levante y Terral SL</span>
+        <span class="profile-pill">CAJAMAR</span>
+        <span class="profile-pill">Notion</span>
+        <span class="profile-pill">Google Drive</span>
+      </div>
+    </div>
+
+    <div class="section-header">Conexiones</div>
+    <div class="settings-list">
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <div class="settings-item-icon mod-purple">📓</div>
+          <div class="settings-label">Notion</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="settings-value" style="color:#1D9E75">Conectado</div>
+          <div class="settings-chevron">›</div>
+        </div>
+      </div>
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <div class="settings-item-icon mod-blue">💾</div>
+          <div class="settings-label">Google Drive</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="settings-value" style="color:#1D9E75">Conectado</div>
+          <div class="settings-chevron">›</div>
+        </div>
+      </div>
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <div class="settings-item-icon mod-amber">🏦</div>
+          <div class="settings-label">CAJAMAR JC 2026</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="settings-value" style="color:#1D9E75">Activo</div>
+          <div class="settings-chevron">›</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">Empresa</div>
+    <div class="settings-list">
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <div class="settings-item-icon mod-teal">🏢</div>
+          <div class="settings-label">Levante y Terral SL</div>
+        </div>
+        <div class="settings-value">NIF B27522895</div>
+      </div>
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <div class="settings-item-icon mod-gray">📍</div>
+          <div class="settings-label">Domicilio</div>
+        </div>
+        <div class="settings-value">C/ Frailes Cartujos 2, 2ºB</div>
+      </div>
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <div class="settings-item-icon mod-coral">🏛️</div>
+          <div class="settings-label">Colegiado</div>
+        </div>
+        <div class="settings-value">Nº 685</div>
+      </div>
+    </div>
+
+    <div class="section-header">App</div>
+    <div class="settings-list">
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <div class="settings-item-icon mod-gray">ℹ️</div>
+          <div class="settings-label">Versión</div>
+        </div>
+        <div class="settings-value">1.0.0 · Fase 1</div>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+</div><!-- /view-ajustes -->
+
+
+<!-- ═══════════════════════════════════════════════
+     NAV BAR
+════════════════════════════════════════════════ -->
+<nav class="nav-bar">
+  <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
+    <span class="nav-icon">⊞</span>
+    <span class="nav-label">Inicio</span>
+  </button>
+  <button class="nav-item" id="nav-modulos" onclick="switchTab('modulos')">
+    <span class="nav-icon">⬡</span>
+    <span class="nav-label">Módulos</span>
+  </button>
+  <button class="nav-item" id="nav-ajustes" onclick="switchTab('ajustes')">
+    <span class="nav-icon">⚙</span>
+    <span class="nav-label">Ajustes</span>
+  </button>
+</nav>
+
+<script>
+  let currentView = 'home';
+  let currentTab  = 'home';
+
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById('view-' + id);
+    if (el) el.classList.add('active');
+    currentView = id;
+    window.scrollTo(0, 0);
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('nav-' + tab).classList.add('active');
+    if (tab === 'home')    showView('home');
+    if (tab === 'modulos') showView('nuevo');
+    if (tab === 'ajustes') showView('ajustes');
+  }
+
+  function openModule(id) {
+    showView(id);
+  }
+
+  function goBack() {
+    if (currentTab === 'home')    showView('home');
+    if (currentTab === 'modulos') showView('nuevo');
+    if (currentTab === 'ajustes') showView('ajustes');
+  }
+
+  // Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
+</body>
+</html>
