@@ -535,11 +535,14 @@ function voInitView() {
 }
 
 async function voCargarObras() {
-  const url = voGetUrl() || 'https://script.google.com/macros/s/AKfycbyrunAzE0mJPDXKgWR5mSXiWJK-vUFQaOYqHhqLHcwmZIDkKBGCggMcXzpQm10a_e_7wA/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbyrunAzE0mJPDXKgWR5mSXiWJK-vUFQaOYqHhqLHcwmZIDkKBGCggMcXzpQm10a_e_7wA/exec';
   const select = document.getElementById('vo-obra-select');
   select.innerHTML = '<option value="">Cargando obras...</option>';
   try {
-    const res = await fetch(url + '?action=obras');
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'obras' })
+    });
     const data = await res.json();
     if (data.ok && data.obras && data.obras.length > 0) {
       const opts = data.obras.map(function(o) {
@@ -657,6 +660,7 @@ async function voSubirFotos() {
     if (pct < 80) { pct += 5; bar.style.width = pct + '%'; }
   }, 400);
 
+  const comentario = document.getElementById('vo-comentario') ? document.getElementById('vo-comentario').value.trim() : '';
   try {
     const res = await fetch(url, {
       method: 'POST',
@@ -682,6 +686,7 @@ async function voSubirFotos() {
       voFotos = [];
       voRenderPreviews();
       voRenderHistorial();
+      if(document.getElementById('vo-comentario')) { document.getElementById('vo-comentario').value = ''; document.getElementById('vo-comentario-area').style.display = 'none'; }
 
     } else {
       throw new Error(data.error || 'Error desconocido');
