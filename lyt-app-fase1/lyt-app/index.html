@@ -578,7 +578,7 @@ function voEliminarFoto(id) {
 function voRenderPreviews() {
   const grid = document.getElementById('vo-preview-grid');
   if (voFotos.length === 0) { grid.innerHTML = ''; return; }
-  grid.innerHTML = voFotos.map(function(f){ return '<div class="vo-preview-item"><img src="'+f.dataUrl+'" /><button class="vo-preview-remove" onclick="voEliminarFoto('+f.id+')">✕</button></div>'; }).join(''));
+  grid.innerHTML = voFotos.map(function(f){ return '<div class="vo-preview-item"><img src="'+f.dataUrl+'" /><button class="vo-preview-remove" onclick="voEliminarFoto('+f.id+')">✕</button></div>'; }).join('');
 }
 
 function voActualizarBoton() {
