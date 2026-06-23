@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0F6E56" />
+  <meta name="theme-color" content="#085041" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="LyT" />
@@ -12,7 +12,6 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --teal-dark:   #085041;
       --teal-mid:    #0F6E56;
@@ -31,6 +30,8 @@
       --gray-dark:   #444441;
       --gray-mid:    #888780;
       --gray-light:  #F1EFE8;
+      --red-dark:    #A32D2D;
+      --red-light:   #FCEBEB;
       --text-1:      #1a1a18;
       --text-2:      #5F5E5A;
       --text-3:      #888780;
@@ -44,654 +45,404 @@
       --safe-top:    env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text-1);
-      min-height: 100dvh;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── VISTAS ─────────────────────────────────── */
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-1); min-height: 100dvh; -webkit-font-smoothing: antialiased; }
     .view { display: none; min-height: 100dvh; flex-direction: column; }
     .view.active { display: flex; }
-
-    /* ── TOPBAR ─────────────────────────────────── */
-    .topbar {
-      background: var(--teal-dark);
-      color: white;
-      padding: calc(var(--safe-top) + 14px) 16px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .topbar-back {
-      background: none;
-      border: none;
-      color: var(--teal-light);
-      font-size: 15px;
-      padding: 4px 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .topbar-title { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+    .topbar { background: var(--teal-dark); color: white; padding: calc(var(--safe-top) + 14px) 16px 14px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .topbar-back { background: none; border: none; color: var(--teal-light); font-size: 15px; padding: 4px 0; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+    .topbar-title { font-size: 15px; font-weight: 600; }
     .topbar-sub   { font-size: 11px; color: var(--teal-light); margin-top: 1px; }
-    .topbar-avatar {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--teal-soft);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 600; color: var(--teal-dark);
-      flex-shrink: 0;
-    }
-
-    /* ── SCROLL AREA ────────────────────────────── */
-    .scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: calc(var(--safe-bottom) + 80px);
-    }
-
-    /* ── STATS ──────────────────────────────────── */
-    .stats-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 16px 16px 0;
-    }
-    .stat-card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px;
-    }
+    .topbar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--teal-soft); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--teal-dark); flex-shrink: 0; }
+    .scroll-area { flex: 1; overflow-y: auto; padding-bottom: calc(var(--safe-bottom) + 80px); }
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 16px 0; }
+    .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
     .stat-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
     .stat-value { font-size: 22px; font-weight: 600; color: var(--text-1); line-height: 1; }
     .stat-sub   { font-size: 11px; color: var(--text-3); margin-top: 4px; }
-
-    /* ── SECCIÓN ────────────────────────────────── */
-    .section-header {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-3);
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      padding: 20px 16px 8px;
-    }
-
-    /* ── MÓDULOS ────────────────────────────────── */
-    .modules-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 0 16px;
-    }
-    .module-card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      cursor: pointer;
-      transition: transform 0.1s, border-color 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .section-header { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.07em; text-transform: uppercase; padding: 20px 16px 8px; }
+    .modules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px; }
+    .module-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; cursor: pointer; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
     .module-card:active { transform: scale(0.97); }
-    .module-icon {
-      width: 40px; height: 40px;
-      border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
+    .module-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 10px; }
     .mod-teal   { background: var(--teal-pale);   color: var(--teal-mid);   }
     .mod-amber  { background: var(--amber-light);  color: var(--amber-dark); }
     .mod-blue   { background: var(--blue-light);   color: var(--blue-dark);  }
     .mod-coral  { background: var(--coral-light);  color: var(--coral-dark); }
     .mod-purple { background: var(--purple-light); color: var(--purple-dark);}
     .mod-gray   { background: var(--gray-light);   color: var(--gray-dark);  }
+    .mod-red    { background: var(--red-light);    color: var(--red-dark);   }
     .module-name { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 3px; }
     .module-desc { font-size: 11px; color: var(--text-3); line-height: 1.4; }
-    .module-badge {
-      display: inline-block;
-      font-size: 10px; font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 99px;
-      margin-top: 8px;
-    }
-    .badge-ok     { background: var(--teal-pale);   color: var(--teal-mid);   }
-    .badge-soon   { background: var(--gray-light);   color: var(--gray-mid);   }
-
-    /* ── AÑADIR MÓDULO ──────────────────────────── */
-    .add-module-btn {
-      margin: 10px 16px 0;
-      border: 1px dashed var(--border-mid);
-      border-radius: var(--radius-lg);
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: transparent;
-      color: var(--text-3);
-      font-size: 13px;
-      cursor: pointer;
-      width: calc(100% - 32px);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .add-module-btn:active { background: rgba(0,0,0,0.03); }
-
-    /* ── ACTIVIDAD ──────────────────────────────── */
+    .module-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 99px; margin-top: 8px; }
+    .badge-ok   { background: var(--teal-pale);  color: var(--teal-mid); }
+    .badge-soon { background: var(--gray-light);  color: var(--gray-mid); }
+    .add-module-btn { margin: 10px 16px 0; border: 1px dashed var(--border-mid); border-radius: var(--radius-lg); padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; background: transparent; color: var(--text-3); font-size: 13px; cursor: pointer; width: calc(100% - 32px); -webkit-tap-highlight-color: transparent; }
     .activity-list { padding: 0 16px; }
-    .activity-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 0.5px solid var(--border);
-    }
+    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
     .activity-item:last-child { border-bottom: none; }
-    .activity-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      margin-top: 5px; flex-shrink: 0;
-    }
-    .dot-teal   { background: var(--teal-soft); }
-    .dot-amber  { background: var(--amber-mid); }
-    .dot-blue   { background: var(--blue-dark); }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+    .dot-teal  { background: var(--teal-soft); }
+    .dot-amber { background: var(--amber-mid); }
+    .dot-blue  { background: var(--blue-dark); }
     .activity-text { font-size: 13px; color: var(--text-1); line-height: 1.4; }
     .activity-time { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-
-    /* ── NAV BAR ────────────────────────────────── */
-    .nav-bar {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: var(--surface);
-      border-top: 0.5px solid var(--border);
-      display: flex;
-      padding-bottom: var(--safe-bottom);
-      z-index: 20;
-    }
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 0 8px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      border: none;
-      background: none;
-      gap: 3px;
-    }
-    .nav-icon { font-size: 22px; color: var(--text-3); transition: color 0.15s; }
-    .nav-label { font-size: 10px; color: var(--text-3); transition: color 0.15s; letter-spacing: 0.02em; }
-    .nav-item.active .nav-icon,
-    .nav-item.active .nav-label { color: var(--teal-mid); }
-
-    /* ── VISTAS DE MÓDULO ───────────────────────── */
-    .module-header {
-      padding: 20px 16px 16px;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--surface);
-    }
-    .module-header-icon {
-      width: 48px; height: 48px;
-      border-radius: var(--radius-md);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
+    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 0.5px solid var(--border); display: flex; padding-bottom: var(--safe-bottom); z-index: 20; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 8px; cursor: pointer; -webkit-tap-highlight-color: transparent; border: none; background: none; gap: 3px; }
+    .nav-icon  { font-size: 22px; color: var(--text-3); transition: color 0.15s; }
+    .nav-label { font-size: 10px; color: var(--text-3); transition: color 0.15s; }
+    .nav-item.active .nav-icon, .nav-item.active .nav-label { color: var(--teal-mid); }
+    .module-header { padding: 20px 16px 16px; border-bottom: 0.5px solid var(--border); background: var(--surface); }
+    .module-header-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 10px; }
     .module-header-title { font-size: 20px; font-weight: 700; color: var(--text-1); }
     .module-header-desc  { font-size: 13px; color: var(--text-2); margin-top: 4px; line-height: 1.5; }
-
-    .coming-soon-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 24px;
-      text-align: center;
-      gap: 12px;
-    }
-    .coming-soon-icon { font-size: 48px; }
+    .coming-soon-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; text-align: center; gap: 12px; }
+    .coming-soon-icon  { font-size: 48px; }
     .coming-soon-title { font-size: 18px; font-weight: 600; color: var(--text-1); }
     .coming-soon-desc  { font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 280px; }
-
-    /* ── AJUSTES ────────────────────────────────── */
     .settings-list { padding: 0 16px; }
-    .settings-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 0.5px solid var(--border);
-      cursor: pointer;
-    }
+    .settings-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
     .settings-item:last-child { border-bottom: none; }
     .settings-item-left { display: flex; align-items: center; gap: 12px; }
-    .settings-item-icon {
-      width: 34px; height: 34px;
-      border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
-    }
+    .settings-item-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 16px; }
     .settings-label { font-size: 14px; color: var(--text-1); }
     .settings-value { font-size: 13px; color: var(--text-3); }
-    .settings-chevron { font-size: 18px; color: var(--text-3); }
-
-    .profile-card {
-      margin: 16px;
-      background: var(--teal-dark);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      color: white;
-    }
+    .profile-card { margin: 16px; background: var(--teal-dark); border-radius: var(--radius-lg); padding: 20px; color: white; }
     .profile-name  { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
     .profile-role  { font-size: 12px; color: var(--teal-light); }
     .profile-pills { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-    .profile-pill  {
-      font-size: 11px; font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 99px;
-      background: rgba(255,255,255,0.12);
-      color: var(--teal-light);
-    }
-
-    /* ── DIVIDER ────────────────────────────────── */
-    .divider { height: 0.5px; background: var(--border); margin: 4px 0; }
+    .profile-pill  { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,0.12); color: var(--teal-light); }
+    .vo-config-banner { margin: 12px 16px 0; background: var(--amber-light); border: 0.5px solid var(--amber-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; color: var(--amber-dark); display: none; }
+    .vo-config-banner.show { display: block; }
+    .vo-config-banner a { color: var(--amber-dark); font-weight: 600; }
+    .vo-obra-selector { padding: 16px 16px 0; }
+    .vo-obra-selector label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+    .vo-obra-selector select { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 15px; color: var(--text-1); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+    .vo-dropzone { margin: 16px 16px 0; border: 1.5px dashed var(--border-mid); border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; cursor: pointer; transition: background 0.15s, border-color 0.15s; background: var(--surface); }
+    .vo-dropzone.drag-over { background: var(--teal-pale); border-color: var(--teal-soft); }
+    .vo-dropzone-icon  { font-size: 36px; margin-bottom: 8px; }
+    .vo-dropzone-text  { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+    .vo-dropzone-sub   { font-size: 12px; color: var(--text-3); }
+    #vo-file-input { display: none; }
+    .vo-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 16px 0; }
+    .vo-preview-item { position: relative; aspect-ratio: 1; border-radius: var(--radius-sm); overflow: hidden; background: var(--gray-light); }
+    .vo-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .vo-preview-remove { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.55); border: none; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .vo-btn-subir { margin: 16px 16px 0; width: calc(100% - 32px); background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-md); padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; }
+    .vo-btn-subir:disabled { background: var(--gray-mid); cursor: not-allowed; }
+    .vo-btn-subir:not(:disabled):active { background: var(--teal-dark); }
+    .vo-progress { margin: 12px 16px 0; display: none; }
+    .vo-progress.show { display: block; }
+    .vo-progress-bar-bg { height: 6px; background: var(--gray-light); border-radius: 99px; overflow: hidden; }
+    .vo-progress-bar    { height: 100%; background: var(--teal-soft); border-radius: 99px; width: 0%; transition: width 0.3s; }
+    .vo-progress-label  { font-size: 12px; color: var(--text-3); margin-top: 6px; text-align: center; }
+    .vo-result { margin: 12px 16px 0; border-radius: var(--radius-md); padding: 14px; font-size: 13px; display: none; }
+    .vo-result.show { display: block; }
+    .vo-result.ok  { background: var(--teal-pale); color: var(--teal-dark); }
+    .vo-result.err { background: var(--red-light); color: var(--red-dark); }
+    .vo-result a   { color: inherit; font-weight: 600; }
+    .vo-historial { padding: 0 16px; }
+    .vo-historial-item { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 0.5px solid var(--border); }
+    .vo-historial-item:last-child { border-bottom: none; }
+    .vo-historial-thumb { width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .vo-historial-info  { flex: 1; }
+    .vo-historial-obra  { font-size: 13px; font-weight: 600; color: var(--text-1); }
+    .vo-historial-meta  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .vo-historial-link  { font-size: 20px; color: var(--text-3); text-decoration: none; }
+    .vo-url-form { padding: 16px; }
+    .vo-url-form label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+    .vo-url-form input { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; color: var(--text-1); }
+    .vo-url-hint { font-size: 12px; color: var(--text-3); margin-top: 6px; line-height: 1.5; }
+    .vo-url-save { margin-top: 12px; width: 100%; background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-md); padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════
-     VISTA: INICIO
-════════════════════════════════════════════════ -->
 <div class="view active" id="view-home">
   <div class="topbar">
-    <div>
-      <div class="topbar-title">Levante y Terral</div>
-      <div class="topbar-sub">Panel de gestión</div>
-    </div>
+    <div><div class="topbar-title">Levante y Terral</div><div class="topbar-sub">Panel de gestión</div></div>
     <div class="topbar-avatar">JL</div>
   </div>
-
   <div class="scroll-area">
-
-    <!-- Stats rápidos -->
     <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">Obras activas</div>
-        <div class="stat-value">—</div>
-        <div class="stat-sub">desde Notion</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Última factura</div>
-        <div class="stat-value">—</div>
-        <div class="stat-sub">pendiente sync</div>
-      </div>
+      <div class="stat-card"><div class="stat-label">Obras activas</div><div class="stat-value" id="stat-obras">—</div><div class="stat-sub">desde Notion</div></div>
+      <div class="stat-card"><div class="stat-label">Última visita</div><div class="stat-value" id="stat-visita">—</div><div class="stat-sub" id="stat-visita-sub">sin registros</div></div>
     </div>
-
-    <!-- Módulos activos -->
     <div class="section-header">Módulos activos</div>
     <div class="modules-grid">
-
-      <div class="module-card" onclick="openModule('facturas')">
-        <div class="module-icon mod-teal">🧾</div>
-        <div class="module-name">Facturas</div>
-        <div class="module-desc">Genera PDFs A y B</div>
-        <span class="module-badge badge-ok">Activo</span>
-      </div>
-
-      <div class="module-card" onclick="openModule('extracto')">
-        <div class="module-icon mod-amber">🏦</div>
-        <div class="module-name">Extracto banco</div>
-        <div class="module-desc">CAJAMAR → Notion</div>
-        <span class="module-badge badge-ok">Activo</span>
-      </div>
-
-      <div class="module-card" onclick="openModule('visita')">
-        <div class="module-icon mod-blue">📷</div>
-        <div class="module-name">Visita obra</div>
-        <div class="module-desc">Fotos → Drive</div>
-        <span class="module-badge badge-ok">Activo</span>
-      </div>
-
-      <div class="module-card" onclick="openModule('obras')">
-        <div class="module-icon mod-coral">🏗️</div>
-        <div class="module-name">Obras</div>
-        <div class="module-desc">Estado y seguimiento</div>
-        <span class="module-badge badge-soon">Próximo</span>
-      </div>
-
+      <div class="module-card" onclick="openModule('facturas')"><div class="module-icon mod-teal">🧾</div><div class="module-name">Facturas</div><div class="module-desc">Genera PDFs A y B</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('extracto')"><div class="module-icon mod-amber">🏦</div><div class="module-name">Extracto banco</div><div class="module-desc">CAJAMAR → Notion</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('visita')"><div class="module-icon mod-blue">📷</div><div class="module-name">Visita obra</div><div class="module-desc">Fotos → Drive</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('obras')"><div class="module-icon mod-coral">🏗️</div><div class="module-name">Obras</div><div class="module-desc">Estado y seguimiento</div><span class="module-badge badge-soon">Próximo</span></div>
     </div>
-
-    <button class="add-module-btn" onclick="openModule('nuevo')">
-      ＋ &nbsp;Añadir módulo
-    </button>
-
-    <!-- Actividad reciente -->
+    <button class="add-module-btn" onclick="openModule('nuevo')">＋ &nbsp;Añadir módulo</button>
     <div class="section-header">Actividad reciente</div>
     <div class="activity-list">
-      <div class="activity-item">
-        <div class="activity-dot dot-teal"></div>
-        <div>
-          <div class="activity-text">Extracto CAJAMAR procesado</div>
-          <div class="activity-time">Hoy · 10:32</div>
-        </div>
-      </div>
-      <div class="activity-item">
-        <div class="activity-dot dot-blue"></div>
-        <div>
-          <div class="activity-text">Visita obra · C/ Cáceres · 4 fotos</div>
-          <div class="activity-time">Ayer · 16:15</div>
-        </div>
-      </div>
-      <div class="activity-item">
-        <div class="activity-dot dot-amber"></div>
-        <div>
-          <div class="activity-text">Factura LyT 2026/2T/10 generada</div>
-          <div class="activity-time">Hace 3 días</div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /scroll-area -->
-</div><!-- /view-home -->
-
-
-<!-- ═══════════════════════════════════════════════
-     VISTA: FACTURAS
-════════════════════════════════════════════════ -->
-<div class="view" id="view-facturas">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Facturas</div>
-    <div style="width:56px"></div>
-  </div>
-  <div class="scroll-area">
-    <div class="module-header">
-      <div class="module-header-icon mod-teal">🧾</div>
-      <div class="module-header-title">Facturas</div>
-      <div class="module-header-desc">Genera facturas en PDF para Levante y Terral (plantilla B) o para tu práctica de arquitecto (plantilla A), directamente desde Notion.</div>
-    </div>
-    <div class="coming-soon-body">
-      <div class="coming-soon-icon">🛠️</div>
-      <div class="coming-soon-title">Módulo en construcción</div>
-      <div class="coming-soon-desc">El formulario de facturas estará disponible en la Fase 2. Mientras tanto, usa el Proyecto de Claude como siempre.</div>
+      <div class="activity-item"><div class="activity-dot dot-teal"></div><div><div class="activity-text">Extracto CAJAMAR procesado</div><div class="activity-time">Hoy · 10:32</div></div></div>
+      <div class="activity-item"><div class="activity-dot dot-blue"></div><div><div class="activity-text">Visita obra · C/ Cáceres · 4 fotos</div><div class="activity-time">Ayer · 16:15</div></div></div>
+      <div class="activity-item"><div class="activity-dot dot-amber"></div><div><div class="activity-text">Factura LyT 2026/2T/10 generada</div><div class="activity-time">Hace 3 días</div></div></div>
     </div>
   </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════════════
-     VISTA: EXTRACTO
-════════════════════════════════════════════════ -->
-<div class="view" id="view-extracto">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Extracto banco</div>
-    <div style="width:56px"></div>
-  </div>
-  <div class="scroll-area">
-    <div class="module-header">
-      <div class="module-header-icon mod-amber">🏦</div>
-      <div class="module-header-title">Extracto CAJAMAR</div>
-      <div class="module-header-desc">Sube un PDF del extracto bancario y los movimientos se sincronizan automáticamente en la base de datos de Notion, sin duplicados.</div>
-    </div>
-    <div class="coming-soon-body">
-      <div class="coming-soon-icon">🛠️</div>
-      <div class="coming-soon-title">Módulo en construcción</div>
-      <div class="coming-soon-desc">El uploader de extractos estará disponible en la Fase 2. Mientras tanto, usa el Proyecto de Claude como siempre.</div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════════
-     VISTA: VISITA OBRA
-════════════════════════════════════════════════ -->
 <div class="view" id="view-visita">
   <div class="topbar">
     <button class="topbar-back" onclick="goBack()">← Inicio</button>
     <div class="topbar-title">Visita obra</div>
-    <div style="width:56px"></div>
+    <button style="background:none;border:none;color:var(--teal-light);font-size:20px;cursor:pointer;padding:4px;" onclick="openModule('visita-config')">⚙</button>
+  </div>
+  <div class="scroll-area">
+    <div class="vo-config-banner" id="vo-banner">Falta la URL del script. <a href="#" onclick="openModule('visita-config');return false;">Configurar ahora →</a></div>
+    <div class="vo-obra-selector">
+      <label>Obra</label>
+      <select id="vo-obra-select">
+        <option value="">— Selecciona una obra —</option>
+        <option value="C/ Cáceres - Cerrado Calderón">C/ Cáceres - Cerrado Calderón</option>
+        <option value="RF Cervantes">RF Cervantes</option>
+        <option value="Jáuregui">Jáuregui</option>
+        <option value="Alba">Alba</option>
+        <option value="Pica">Pica</option>
+        <option value="Vilaseca">Vilaseca</option>
+        <option value="Pilates">Pilates</option>
+        <option value="Otra">Otra obra…</option>
+      </select>
+    </div>
+    <div class="vo-dropzone" id="vo-dropzone" onclick="document.getElementById('vo-file-input').click()">
+      <div class="vo-dropzone-icon">📸</div>
+      <div class="vo-dropzone-text">Toca para añadir fotos</div>
+      <div class="vo-dropzone-sub">o arrastra aquí desde el carrete</div>
+    </div>
+    <input type="file" id="vo-file-input" accept="image/*" multiple capture="environment" />
+    <div class="vo-preview-grid" id="vo-preview-grid"></div>
+    <button class="vo-btn-subir" id="vo-btn-subir" disabled onclick="voSubirFotos()">Subir fotos a Drive</button>
+    <div class="vo-progress" id="vo-progress">
+      <div class="vo-progress-bar-bg"><div class="vo-progress-bar" id="vo-progress-bar"></div></div>
+      <div class="vo-progress-label" id="vo-progress-label">Subiendo…</div>
+    </div>
+    <div class="vo-result" id="vo-result"></div>
+    <div class="section-header" style="margin-top:8px">Historial reciente</div>
+    <div class="vo-historial" id="vo-historial"><div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin visitas registradas aún</div></div>
+  </div>
+</div>
+
+<div class="view" id="view-visita-config">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack('visita')">← Visita obra</button>
+    <div class="topbar-title">Configurar script</div>
+    <div style="width:40px"></div>
   </div>
   <div class="scroll-area">
     <div class="module-header">
-      <div class="module-header-icon mod-blue">📷</div>
-      <div class="module-header-title">Visita de obra</div>
-      <div class="module-header-desc">Haz fotos en obra. Se suben automáticamente a Google Drive organizadas por obra y fecha.</div>
+      <div class="module-header-icon mod-blue">⚙️</div>
+      <div class="module-header-title">URL del Apps Script</div>
+      <div class="module-header-desc">Pega aquí la URL de despliegue de tu Google Apps Script. Es la misma que usaba la app anterior de Visita Obra.</div>
     </div>
-    <div class="coming-soon-body">
-      <div class="coming-soon-icon">🔄</div>
-      <div class="coming-soon-title">Migrando desde la app actual</div>
-      <div class="coming-soon-desc">Este módulo está adaptando la PWA existente de Visita Obra al nuevo panel. Estará listo en la Fase 2.</div>
+    <div class="vo-url-form">
+      <label>URL del script desplegado</label>
+      <input type="url" id="vo-script-url-input" placeholder="https://script.google.com/macros/s/…/exec" />
+      <div class="vo-url-hint">La encuentras en script.google.com → tu proyecto → Implementar → Gestionar implementaciones → copiar URL.</div>
+      <button class="vo-url-save" onclick="voGuardarUrl()">Guardar URL</button>
     </div>
   </div>
 </div>
 
+<div class="view" id="view-facturas">
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">← Inicio</button><div class="topbar-title">Facturas</div><div style="width:56px"></div></div>
+  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-teal">🧾</div><div class="module-header-title">Facturas</div><div class="module-header-desc">Genera facturas en PDF para Levante y Terral (plantilla B) o para tu práctica de arquitecto (plantilla A).</div></div><div class="coming-soon-body"><div class="coming-soon-icon">🛠️</div><div class="coming-soon-title">Módulo en construcción</div><div class="coming-soon-desc">Estará en la Fase 3. Usa el Proyecto de Claude habitual mientras tanto.</div></div></div>
+</div>
 
-<!-- ═══════════════════════════════════════════════
-     VISTA: OBRAS
-════════════════════════════════════════════════ -->
+<div class="view" id="view-extracto">
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">← Inicio</button><div class="topbar-title">Extracto banco</div><div style="width:56px"></div></div>
+  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-amber">🏦</div><div class="module-header-title">Extracto CAJAMAR</div><div class="module-header-desc">Sube un PDF del extracto y los movimientos se sincronizan en Notion automáticamente.</div></div><div class="coming-soon-body"><div class="coming-soon-icon">🛠️</div><div class="coming-soon-title">Módulo en construcción</div><div class="coming-soon-desc">Estará en la Fase 3. Usa el Proyecto de Claude habitual mientras tanto.</div></div></div>
+</div>
+
 <div class="view" id="view-obras">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Obras</div>
-    <div style="width:56px"></div>
-  </div>
-  <div class="scroll-area">
-    <div class="module-header">
-      <div class="module-header-icon mod-coral">🏗️</div>
-      <div class="module-header-title">Obras</div>
-      <div class="module-header-desc">Seguimiento de obras activas, certificaciones y estado de trabajos desde Notion.</div>
-    </div>
-    <div class="coming-soon-body">
-      <div class="coming-soon-icon">📋</div>
-      <div class="coming-soon-title">Próximamente</div>
-      <div class="coming-soon-desc">El módulo de obras conectará con tu base de datos OBRAS (BD) de Notion para ver el estado en tiempo real.</div>
-    </div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">← Inicio</button><div class="topbar-title">Obras</div><div style="width:56px"></div></div>
+  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-coral">🏗️</div><div class="module-header-title">Obras</div><div class="module-header-desc">Seguimiento desde Notion.</div></div><div class="coming-soon-body"><div class="coming-soon-icon">📋</div><div class="coming-soon-title">Próximamente</div><div class="coming-soon-desc">Conectará con OBRAS (BD) de Notion.</div></div></div>
 </div>
 
-
-<!-- ═══════════════════════════════════════════════
-     VISTA: NUEVO MÓDULO
-════════════════════════════════════════════════ -->
 <div class="view" id="view-nuevo">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Añadir módulo</div>
-    <div style="width:56px"></div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">← Inicio</button><div class="topbar-title">Añadir módulo</div><div style="width:56px"></div></div>
   <div class="scroll-area">
-    <div class="section-header">Módulos disponibles</div>
+    <div class="section-header">Próximos módulos</div>
     <div class="modules-grid">
-      <div class="module-card">
-        <div class="module-icon mod-coral">📋</div>
-        <div class="module-name">Obras</div>
-        <div class="module-desc">Seguimiento desde Notion</div>
-        <span class="module-badge badge-soon">Próximo</span>
-      </div>
-      <div class="module-card">
-        <div class="module-icon mod-purple">📊</div>
-        <div class="module-name">Certificaciones</div>
-        <div class="module-desc">Cert. de obra por tajo</div>
-        <span class="module-badge badge-soon">Próximo</span>
-      </div>
-      <div class="module-card">
-        <div class="module-icon mod-teal">📁</div>
-        <div class="module-name">Presupuestos</div>
-        <div class="module-desc">Genera y gestiona</div>
-        <span class="module-badge badge-soon">Próximo</span>
-      </div>
-      <div class="module-card">
-        <div class="module-icon mod-gray">🦺</div>
-        <div class="module-name">PRL</div>
-        <div class="module-desc">Documentación PREVETEC</div>
-        <span class="module-badge badge-soon">Próximo</span>
-      </div>
+      <div class="module-card"><div class="module-icon mod-coral">🏗️</div><div class="module-name">Obras</div><div class="module-desc">Seguimiento Notion</div><span class="module-badge badge-soon">Próximo</span></div>
+      <div class="module-card"><div class="module-icon mod-purple">📊</div><div class="module-name">Certificaciones</div><div class="module-desc">Cert. por tajo</div><span class="module-badge badge-soon">Próximo</span></div>
+      <div class="module-card"><div class="module-icon mod-teal">📁</div><div class="module-name">Presupuestos</div><div class="module-desc">Genera y gestiona</div><span class="module-badge badge-soon">Próximo</span></div>
+      <div class="module-card"><div class="module-icon mod-gray">🦺</div><div class="module-name">PRL</div><div class="module-desc">Docs PREVETEC</div><span class="module-badge badge-soon">Próximo</span></div>
     </div>
   </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════════════
-     VISTA: AJUSTES
-════════════════════════════════════════════════ -->
 <div class="view" id="view-ajustes">
-  <div class="topbar">
-    <div>
-      <div class="topbar-title">Ajustes</div>
-    </div>
-    <div class="topbar-avatar">JL</div>
-  </div>
+  <div class="topbar"><div><div class="topbar-title">Ajustes</div></div><div class="topbar-avatar">JL</div></div>
   <div class="scroll-area">
-
     <div class="profile-card">
       <div class="profile-name">José Luis Bustamante Ibáñez</div>
       <div class="profile-role">Arquitecto · Colegiado nº 685</div>
-      <div class="profile-pills">
-        <span class="profile-pill">Levante y Terral SL</span>
-        <span class="profile-pill">CAJAMAR</span>
-        <span class="profile-pill">Notion</span>
-        <span class="profile-pill">Google Drive</span>
-      </div>
+      <div class="profile-pills"><span class="profile-pill">Levante y Terral SL</span><span class="profile-pill">CAJAMAR</span><span class="profile-pill">Notion</span><span class="profile-pill">Google Drive</span></div>
     </div>
-
     <div class="section-header">Conexiones</div>
     <div class="settings-list">
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon mod-purple">📓</div>
-          <div class="settings-label">Notion</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="settings-value" style="color:#1D9E75">Conectado</div>
-          <div class="settings-chevron">›</div>
-        </div>
-      </div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon mod-blue">💾</div>
-          <div class="settings-label">Google Drive</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="settings-value" style="color:#1D9E75">Conectado</div>
-          <div class="settings-chevron">›</div>
-        </div>
-      </div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon mod-amber">🏦</div>
-          <div class="settings-label">CAJAMAR JC 2026</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="settings-value" style="color:#1D9E75">Activo</div>
-          <div class="settings-chevron">›</div>
-        </div>
-      </div>
+      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-purple">📓</div><div class="settings-label">Notion</div></div><div class="settings-value" style="color:#1D9E75">Conectado</div></div>
+      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-blue">💾</div><div class="settings-label">Google Drive</div></div><div class="settings-value" style="color:#1D9E75">Conectado</div></div>
+      <div class="settings-item" onclick="openModule('visita-config')"><div class="settings-item-left"><div class="settings-item-icon mod-blue">📷</div><div class="settings-label">URL Apps Script</div></div><div class="settings-value" id="ajustes-url-state">No configurada</div></div>
     </div>
-
     <div class="section-header">Empresa</div>
     <div class="settings-list">
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon mod-teal">🏢</div>
-          <div class="settings-label">Levante y Terral SL</div>
-        </div>
-        <div class="settings-value">NIF B27522895</div>
-      </div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon mod-gray">📍</div>
-          <div class="settings-label">Domicilio</div>
-        </div>
-        <div class="settings-value">C/ Frailes Cartujos 2, 2ºB</div>
-      </div>
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon mod-coral">🏛️</div>
-          <div class="settings-label">Colegiado</div>
-        </div>
-        <div class="settings-value">Nº 685</div>
-      </div>
+      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-teal">🏢</div><div class="settings-label">Levante y Terral SL</div></div><div class="settings-value">NIF B27522895</div></div>
+      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-coral">🏛️</div><div class="settings-label">Colegiado</div></div><div class="settings-value">Nº 685</div></div>
     </div>
-
     <div class="section-header">App</div>
     <div class="settings-list">
-      <div class="settings-item">
-        <div class="settings-item-left">
-          <div class="settings-item-icon mod-gray">ℹ️</div>
-          <div class="settings-label">Versión</div>
-        </div>
-        <div class="settings-value">1.0.0 · Fase 1</div>
-      </div>
+      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-gray">ℹ️</div><div class="settings-label">Versión</div></div><div class="settings-value">1.1.0 · Fase 2</div></div>
     </div>
+  </div>
+</div>
 
-  </div><!-- /scroll-area -->
-</div><!-- /view-ajustes -->
-
-
-<!-- ═══════════════════════════════════════════════
-     NAV BAR
-════════════════════════════════════════════════ -->
 <nav class="nav-bar">
-  <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
-    <span class="nav-icon">⊞</span>
-    <span class="nav-label">Inicio</span>
-  </button>
-  <button class="nav-item" id="nav-modulos" onclick="switchTab('modulos')">
-    <span class="nav-icon">⬡</span>
-    <span class="nav-label">Módulos</span>
-  </button>
-  <button class="nav-item" id="nav-ajustes" onclick="switchTab('ajustes')">
-    <span class="nav-icon">⚙</span>
-    <span class="nav-label">Ajustes</span>
-  </button>
+  <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">⊞</span><span class="nav-label">Inicio</span></button>
+  <button class="nav-item" id="nav-modulos" onclick="switchTab('modulos')"><span class="nav-icon">⬡</span><span class="nav-label">Módulos</span></button>
+  <button class="nav-item" id="nav-ajustes" onclick="switchTab('ajustes')"><span class="nav-icon">⚙</span><span class="nav-label">Ajustes</span></button>
 </nav>
 
 <script>
-  let currentView = 'home';
-  let currentTab  = 'home';
-
-  function showView(id) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    const el = document.getElementById('view-' + id);
-    if (el) el.classList.add('active');
-    currentView = id;
-    window.scrollTo(0, 0);
+let currentTab = 'home';
+let prevView = null;
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById('view-' + id);
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+}
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-' + tab).classList.add('active');
+  if (tab === 'home')    { prevView = null; showView('home'); }
+  if (tab === 'modulos') { prevView = null; showView('nuevo'); }
+  if (tab === 'ajustes') { prevView = null; showView('ajustes'); }
+}
+function openModule(id) {
+  prevView = currentTab === 'home' ? 'home' : (currentTab === 'modulos' ? 'nuevo' : 'ajustes');
+  showView(id);
+  if (id === 'visita') voInitView();
+}
+function goBack(target) {
+  if (target) { showView(target); return; }
+  if (prevView) { showView(prevView); prevView = null; }
+  else showView('home');
+}
+const VO_KEY_URL = 'lyt_vo_script_url';
+const VO_KEY_HISTORIAL = 'lyt_vo_historial';
+let voFotos = [];
+function voGetUrl() { return localStorage.getItem(VO_KEY_URL) || ''; }
+function voInitView() {
+  const url = voGetUrl();
+  document.getElementById('vo-banner').classList.toggle('show', !url);
+  document.getElementById('vo-script-url-input').value = url;
+  voActualizarBoton();
+  voRenderHistorial();
+  voActualizarEstadoAjustes();
+}
+function voGuardarUrl() {
+  const val = document.getElementById('vo-script-url-input').value.trim();
+  if (!val || !val.startsWith('https://')) { alert('Pega una URL válida que empiece por https://'); return; }
+  localStorage.setItem(VO_KEY_URL, val);
+  document.getElementById('vo-banner').classList.remove('show');
+  voActualizarEstadoAjustes();
+  goBack('visita');
+}
+function voActualizarEstadoAjustes() {
+  const el = document.getElementById('ajustes-url-state');
+  if (el) el.textContent = voGetUrl() ? 'Configurada ✓' : 'No configurada';
+}
+document.getElementById('vo-file-input').addEventListener('change', function(e) {
+  Array.from(e.target.files).forEach(voAgregarFoto);
+  this.value = '';
+});
+const dropzone = document.getElementById('vo-dropzone');
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault(); dropzone.classList.remove('drag-over');
+  Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')).forEach(voAgregarFoto);
+});
+function voAgregarFoto(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const id = Date.now() + Math.random();
+    voFotos.push({ id, file, dataUrl: e.target.result, nombre: file.name });
+    voRenderPreviews(); voActualizarBoton();
+  };
+  reader.readAsDataURL(file);
+}
+function voEliminarFoto(id) {
+  voFotos = voFotos.filter(f => f.id !== id);
+  voRenderPreviews(); voActualizarBoton();
+}
+function voRenderPreviews() {
+  const grid = document.getElementById('vo-preview-grid');
+  if (voFotos.length === 0) { grid.innerHTML = ''; return; }
+  grid.innerHTML = voFotos.map(f => `<div class="vo-preview-item"><img src="${f.dataUrl}" /><button class="vo-preview-remove" onclick="voEliminarFoto(${f.id})">✕</button></div>`).join('');
+}
+function voActualizarBoton() {
+  const btn = document.getElementById('vo-btn-subir');
+  const obra = document.getElementById('vo-obra-select').value;
+  btn.disabled = voFotos.length === 0 || !obra;
+  btn.textContent = voFotos.length > 0 ? `Subir ${voFotos.length} foto${voFotos.length > 1 ? 's' : ''} a Drive` : 'Subir fotos a Drive';
+}
+document.getElementById('vo-obra-select').addEventListener('change', voActualizarBoton);
+async function voSubirFotos() {
+  const url = voGetUrl();
+  const obra = document.getElementById('vo-obra-select').value;
+  if (!url) { openModule('visita-config'); return; }
+  if (!obra || voFotos.length === 0) return;
+  const btn = document.getElementById('vo-btn-subir');
+  const progress = document.getElementById('vo-progress');
+  const bar = document.getElementById('vo-progress-bar');
+  const label = document.getElementById('vo-progress-label');
+  const result = document.getElementById('vo-result');
+  btn.disabled = true; progress.classList.add('show'); result.classList.remove('show');
+  const fecha = new Date().toISOString().slice(0,10);
+  const fotosPayload = voFotos.map((f, i) => {
+    const ext = f.file.type.split('/')[1] || 'jpg';
+    return { base64: f.dataUrl.split(',')[1], mime: f.file.type, nombre: `${fecha}_${obra.replace(/\s+/g,'-')}_${Date.now()+i}.${ext}` };
+  });
+  let pct = 10; bar.style.width = pct + '%';
+  label.textContent = `Preparando ${voFotos.length} foto${voFotos.length>1?'s'}…`;
+  const tick = setInterval(() => { if (pct < 80) { pct += 5; bar.style.width = pct + '%'; } }, 400);
+  try {
+    const res = await fetch(url, { method: 'POST', body: JSON.stringify({ obra, fecha, fotos: fotosPayload }) });
+    const data = await res.json();
+    clearInterval(tick);
+    if (data.ok) {
+      bar.style.width = '100%'; label.textContent = '¡Listo!';
+      result.className = 'vo-result ok show';
+      result.innerHTML = `✅ ${data.subidas.length} foto${data.subidas.length>1?'s':''} subida${data.subidas.length>1?'s':''} correctamente.<br><a href="${data.carpeta}" target="_blank">Ver carpeta en Drive →</a>`;
+      voGuardarHistorial({ obra, fecha, n: data.subidas.length, url: data.carpeta });
+      document.getElementById('stat-visita').textContent = data.subidas.length;
+      document.getElementById('stat-visita-sub').textContent = obra.slice(0,18);
+      voFotos = []; voRenderPreviews(); voRenderHistorial();
+    } else { throw new Error(data.error || 'Error desconocido'); }
+  } catch(err) {
+    clearInterval(tick); bar.style.width = '100%'; bar.style.background = '#E24B4A';
+    label.textContent = 'Error'; result.className = 'vo-result err show';
+    result.innerHTML = `❌ No se pudieron subir las fotos.<br><small>${err.message}</small>`;
   }
-
-  function switchTab(tab) {
-    currentTab = tab;
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    document.getElementById('nav-' + tab).classList.add('active');
-    if (tab === 'home')    showView('home');
-    if (tab === 'modulos') showView('nuevo');
-    if (tab === 'ajustes') showView('ajustes');
-  }
-
-  function openModule(id) {
-    showView(id);
-  }
-
-  function goBack() {
-    if (currentTab === 'home')    showView('home');
-    if (currentTab === 'modulos') showView('nuevo');
-    if (currentTab === 'ajustes') showView('ajustes');
-  }
-
-  // Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  }
+  setTimeout(() => { btn.disabled = false; voActualizarBoton(); }, 2000);
+}
+function voGuardarHistorial(entry) {
+  let h = JSON.parse(localStorage.getItem(VO_KEY_HISTORIAL) || '[]');
+  h.unshift(entry); if (h.length > 20) h = h.slice(0,20);
+  localStorage.setItem(VO_KEY_HISTORIAL, JSON.stringify(h));
+}
+function voRenderHistorial() {
+  const h = JSON.parse(localStorage.getItem(VO_KEY_HISTORIAL) || '[]');
+  const el = document.getElementById('vo-historial');
+  if (h.length === 0) { el.innerHTML = '<div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin visitas registradas aún</div>'; return; }
+  el.innerHTML = h.map(e => `<div class="vo-historial-item"><div class="vo-historial-thumb">📷</div><div class="vo-historial-info"><div class="vo-historial-obra">${e.obra}</div><div class="vo-historial-meta">${e.fecha} · ${e.n} foto${e.n>1?'s':''}</div></div><a class="vo-historial-link" href="${e.url}" target="_blank">↗</a></div>`).join('');
+}
+voActualizarEstadoAjustes();
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(() => {}); }
 </script>
 </body>
 </html>
