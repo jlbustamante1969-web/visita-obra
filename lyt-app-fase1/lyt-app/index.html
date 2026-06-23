@@ -137,9 +137,7 @@
     .profile-pills { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
     .profile-pill  { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,0.12); color: var(--teal-light); }
 
-    /* ══════════════════════════════════════
-       MÓDULO VISITA OBRA
-    ══════════════════════════════════════ */
+    /* MODULO VISITA OBRA */
     .vo-config-banner { margin: 12px 16px 0; background: var(--amber-light); border: 0.5px solid var(--amber-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; color: var(--amber-dark); display: none; }
     .vo-config-banner.show { display: block; }
     .vo-config-banner a { color: var(--amber-dark); font-weight: 600; }
@@ -580,21 +578,14 @@ function voEliminarFoto(id) {
 function voRenderPreviews() {
   const grid = document.getElementById('vo-preview-grid');
   if (voFotos.length === 0) { grid.innerHTML = ''; return; }
-  grid.innerHTML = voFotos.map(f => `
-    <div class="vo-preview-item">
-      <img src="${f.dataUrl}" alt="${f.nombre}" />
-      <button class="vo-preview-remove" onclick="voEliminarFoto(${f.id})">✕</button>
-    </div>
-  `).join('');
+  grid.innerHTML = voFotos.map(function(f){ return '<div class="vo-preview-item"><img src="'+f.dataUrl+'" /><button class="vo-preview-remove" onclick="voEliminarFoto('+f.id+')">✕</button></div>'; }).join(''));
 }
 
 function voActualizarBoton() {
   const btn = document.getElementById('vo-btn-subir');
   const obra = document.getElementById('vo-obra-select').value;
   btn.disabled = voFotos.length === 0 || !obra;
-  btn.textContent = voFotos.length > 0
-    ? `Subir ${voFotos.length} foto${voFotos.length > 1 ? 's' : ''} a Drive`
-    : 'Subir fotos a Drive';
+  btn.textContent = voFotos.length > 0 ? ('Subir ' + voFotos.length + ' foto' + (voFotos.length > 1 ? 's' : '') + ' a Drive') : 'Subir fotos a Drive';
 }
 document.getElementById('vo-obra-select').addEventListener('change', voActualizarBoton);
 
@@ -623,7 +614,7 @@ async function voSubirFotos() {
     const b64 = f.dataUrl.split(',')[1];
     const ext  = f.file.type.split('/')[1] || 'jpg';
     const ts   = Date.now() + i;
-    return { base64: b64, mime: f.file.type, nombre: `${fecha}_${obra.replace(/\s+/g,'-')}_${ts}.${ext}` };
+    return { base64: b64, mime: f.file.type, nombre: fecha + '_' + obra.replace(/\s+/g,'-') + '_' + ts + '.' + ext };
   });
 
   // Subida con progreso simulado
@@ -647,7 +638,7 @@ async function voSubirFotos() {
       bar.style.width = '100%';
       label.textContent = '¡Listo!';
       result.className = 'vo-result ok show';
-      result.innerHTML = `✅ ${data.subidas.length} foto${data.subidas.length>1?'s':''} subida${data.subidas.length>1?'s':''} correctamente.<br><a href="${data.carpeta}" target="_blank">Ver carpeta en Drive →</a>`;
+      result.innerHTML = '✅ ' + data.subidas.length + ' foto' + (data.subidas.length>1?'s':'') + ' subida' + (data.subidas.length>1?'s':'') + ' correctamente.<br><a href="' + data.carpeta + '" target="_blank">Ver carpeta en Drive →</a>';
 
       // Guardar en historial local
       voGuardarHistorial({ obra, fecha, n: data.subidas.length, url: data.carpeta });
@@ -670,7 +661,7 @@ async function voSubirFotos() {
     bar.style.background = '#E24B4A';
     label.textContent = 'Error';
     result.className = 'vo-result err show';
-    result.innerHTML = `❌ No se pudieron subir las fotos.<br><small>${err.message}</small>`;
+    result.innerHTML = '❌ No se pudieron subir las fotos.<br><small>' + err.message + '</small>';
   }
 
   setTimeout(() => {
@@ -694,16 +685,7 @@ function voRenderHistorial() {
     el.innerHTML = '<div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin visitas registradas aún</div>';
     return;
   }
-  el.innerHTML = h.map(e => `
-    <div class="vo-historial-item">
-      <div class="vo-historial-thumb">📷</div>
-      <div class="vo-historial-info">
-        <div class="vo-historial-obra">${e.obra}</div>
-        <div class="vo-historial-meta">${e.fecha} · ${e.n} foto${e.n>1?'s':''}</div>
-      </div>
-      <a class="vo-historial-link" href="${e.url}" target="_blank">↗</a>
-    </div>
-  `).join('');
+  el.innerHTML = h.map(function(e) { return '<div class="vo-historial-item"><div class="vo-historial-thumb">📷</div><div class="vo-historial-info"><div class="vo-historial-obra">' + e.obra + '</div><div class="vo-historial-meta">' + e.fecha + ' · ' + e.n + ' foto' + (e.n>1?'s':'') + '</div></div><a class="vo-historial-link" href="' + e.url + '" target="_blank">↗</a></div>'; }).join('');
 }
 
 // ── INIT ────────────────────────────────────────────────────
