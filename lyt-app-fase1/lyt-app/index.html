@@ -629,7 +629,7 @@ async function voSubirFotos() {
   // Subida con progreso simulado
   let pct = 10;
   bar.style.width = pct + '%';
-  label.textContent = `Preparando ${voFotos.length} foto${voFotos.length>1?'s'}…`;
+  label.textContent = 'Preparando ' + voFotos.length + ' foto' + (voFotos.length>1?'s':'') + '...';
 
   const tick = setInterval(() => {
     if (pct < 80) { pct += 5; bar.style.width = pct + '%'; }
