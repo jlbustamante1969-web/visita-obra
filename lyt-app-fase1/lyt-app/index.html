@@ -46,32 +46,21 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-1); min-height: 100dvh; -webkit-font-smoothing: antialiased; }
-
-    /* VISTAS */
     .view { display: none; min-height: 100dvh; flex-direction: column; }
     .view.active { display: flex; }
-
-    /* TOPBAR */
     .topbar { background: var(--teal-dark); color: white; padding: calc(var(--safe-top) + 14px) 16px 14px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
     .topbar-back { background: none; border: none; color: var(--teal-light); font-size: 15px; padding: 4px 0; cursor: pointer; display: flex; align-items: center; gap: 5px; }
     .topbar-title { font-size: 15px; font-weight: 600; }
     .topbar-sub   { font-size: 11px; color: var(--teal-light); margin-top: 1px; }
     .topbar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--teal-soft); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--teal-dark); flex-shrink: 0; }
-
-    /* SCROLL */
+    .topbar-logo { height: 28px; width: auto; }
     .scroll-area { flex: 1; overflow-y: auto; padding-bottom: calc(var(--safe-bottom) + 80px); }
-
-    /* STATS */
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 16px 0; }
     .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
     .stat-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
     .stat-value { font-size: 22px; font-weight: 600; color: var(--text-1); line-height: 1; }
     .stat-sub   { font-size: 11px; color: var(--text-3); margin-top: 4px; }
-
-    /* SECCIÓN */
     .section-header { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.07em; text-transform: uppercase; padding: 20px 16px 8px; }
-
-    /* MÓDULOS */
     .modules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px; }
     .module-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; cursor: pointer; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
     .module-card:active { transform: scale(0.97); }
@@ -88,11 +77,7 @@
     .module-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 99px; margin-top: 8px; }
     .badge-ok   { background: var(--teal-pale);  color: var(--teal-mid); }
     .badge-soon { background: var(--gray-light);  color: var(--gray-mid); }
-
-    /* AÑADIR */
     .add-module-btn { margin: 10px 16px 0; border: 1px dashed var(--border-mid); border-radius: var(--radius-lg); padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; background: transparent; color: var(--text-3); font-size: 13px; cursor: pointer; width: calc(100% - 32px); -webkit-tap-highlight-color: transparent; }
-
-    /* ACTIVIDAD */
     .activity-list { padding: 0 16px; }
     .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
     .activity-item:last-child { border-bottom: none; }
@@ -102,28 +87,19 @@
     .dot-blue  { background: var(--blue-dark); }
     .activity-text { font-size: 13px; color: var(--text-1); line-height: 1.4; }
     .activity-time { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-
-    /* NAV BAR */
     .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 0.5px solid var(--border); display: flex; padding-bottom: var(--safe-bottom); z-index: 20; }
     .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0 8px; cursor: pointer; -webkit-tap-highlight-color: transparent; border: none; background: none; gap: 3px; }
     .nav-icon  { font-size: 22px; color: var(--text-3); transition: color 0.15s; }
     .nav-label { font-size: 10px; color: var(--text-3); transition: color 0.15s; }
-    .nav-item.active .nav-icon,
-    .nav-item.active .nav-label { color: var(--teal-mid); }
-
-    /* MÓDULO HEADER */
+    .nav-item.active .nav-icon, .nav-item.active .nav-label { color: var(--teal-mid); }
     .module-header { padding: 20px 16px 16px; border-bottom: 0.5px solid var(--border); background: var(--surface); }
     .module-header-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 10px; }
     .module-header-title { font-size: 20px; font-weight: 700; color: var(--text-1); }
     .module-header-desc  { font-size: 13px; color: var(--text-2); margin-top: 4px; line-height: 1.5; }
-
-    /* COMING SOON */
     .coming-soon-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; text-align: center; gap: 12px; }
     .coming-soon-icon  { font-size: 48px; }
     .coming-soon-title { font-size: 18px; font-weight: 600; color: var(--text-1); }
     .coming-soon-desc  { font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 280px; }
-
-    /* AJUSTES */
     .settings-list { padding: 0 16px; }
     .settings-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
     .settings-item:last-child { border-bottom: none; }
@@ -136,44 +112,35 @@
     .profile-role  { font-size: 12px; color: var(--teal-light); }
     .profile-pills { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
     .profile-pill  { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,0.12); color: var(--teal-light); }
-
-    /* MODULO VISITA OBRA */
     .vo-config-banner { margin: 12px 16px 0; background: var(--amber-light); border: 0.5px solid var(--amber-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; color: var(--amber-dark); display: none; }
     .vo-config-banner.show { display: block; }
     .vo-config-banner a { color: var(--amber-dark); font-weight: 600; }
-
     .vo-obra-selector { padding: 16px 16px 0; }
     .vo-obra-selector label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; }
     .vo-obra-selector select { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 15px; color: var(--text-1); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
-
     .vo-dropzone { margin: 16px 16px 0; border: 1.5px dashed var(--border-mid); border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; cursor: pointer; transition: background 0.15s, border-color 0.15s; background: var(--surface); }
     .vo-dropzone.drag-over { background: var(--teal-pale); border-color: var(--teal-soft); }
     .vo-dropzone-icon  { font-size: 36px; margin-bottom: 8px; }
     .vo-dropzone-text  { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
     .vo-dropzone-sub   { font-size: 12px; color: var(--text-3); }
     #vo-file-input { display: none; }
-
     .vo-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px 16px 0; }
     .vo-preview-item { position: relative; aspect-ratio: 1; border-radius: var(--radius-sm); overflow: hidden; background: var(--gray-light); }
     .vo-preview-item img { width: 100%; height: 100%; object-fit: cover; }
     .vo-preview-remove { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.55); border: none; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
-
     .vo-btn-subir { margin: 16px 16px 0; width: calc(100% - 32px); background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-md); padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; }
     .vo-btn-subir:disabled { background: var(--gray-mid); cursor: not-allowed; }
     .vo-btn-subir:not(:disabled):active { background: var(--teal-dark); }
-
     .vo-progress { margin: 12px 16px 0; display: none; }
     .vo-progress.show { display: block; }
     .vo-progress-bar-bg { height: 6px; background: var(--gray-light); border-radius: 99px; overflow: hidden; }
     .vo-progress-bar    { height: 100%; background: var(--teal-soft); border-radius: 99px; width: 0%; transition: width 0.3s; }
     .vo-progress-label  { font-size: 12px; color: var(--text-3); margin-top: 6px; text-align: center; }
-
     .vo-result { margin: 12px 16px 0; border-radius: var(--radius-md); padding: 14px; font-size: 13px; display: none; }
     .vo-result.show { display: block; }
-    .vo-result.ok  { background: var(--teal-pale);  color: var(--teal-dark);  }
-    .vo-result.err { background: var(--red-light);  color: var(--red-dark);   }
+    .vo-result.ok  { background: var(--teal-pale); color: var(--teal-dark); }
+    .vo-result.err { background: var(--red-light); color: var(--red-dark); }
     .vo-result a   { color: inherit; font-weight: 600; }
-
     .vo-historial { padding: 0 16px; }
     .vo-historial-item { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 0.5px solid var(--border); }
     .vo-historial-item:last-child { border-bottom: none; }
@@ -182,23 +149,18 @@
     .vo-historial-obra  { font-size: 13px; font-weight: 600; color: var(--text-1); }
     .vo-historial-meta  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
     .vo-historial-link  { font-size: 20px; color: var(--text-3); text-decoration: none; }
-
-    /* SCRIPT URL MODAL */
     .vo-url-form { padding: 16px; }
     .vo-url-form label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; }
     .vo-url-form input { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; color: var(--text-1); }
-    .vo-url-form .vo-url-hint { font-size: 12px; color: var(--text-3); margin-top: 6px; line-height: 1.5; }
+    .vo-url-hint { font-size: 12px; color: var(--text-3); margin-top: 6px; line-height: 1.5; }
     .vo-url-save { margin-top: 12px; width: 100%; background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-md); padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
     .vo-notion-token-form { padding: 0 16px 16px; }
     .vo-notion-token-form label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; margin-top: 16px; }
     .vo-notion-token-form input { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; color: var(--text-1); }
-    .vo-notion-token-form .vo-url-hint { font-size: 12px; color: var(--text-3); margin-top: 6px; line-height: 1.5; }
-    .topbar-logo { height: 28px; width: auto; }
   </style>
 </head>
 <body>
 
-<!-- ═══ VISTA: INICIO ═══ -->
 <div class="view active" id="view-home">
   <div class="topbar">
     <img src="icons/logo.png" alt="Levante y Terral" class="topbar-logo" onerror="this.style.display='none';document.getElementById('topbar-fallback').style.display='block'" />
@@ -207,138 +169,63 @@
   </div>
   <div class="scroll-area">
     <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">Obras activas</div>
-        <div class="stat-value" id="stat-obras">—</div>
-        <div class="stat-sub">desde Notion</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Última visita</div>
-        <div class="stat-value" id="stat-visita">—</div>
-        <div class="stat-sub" id="stat-visita-sub">sin registros</div>
-      </div>
+      <div class="stat-card"><div class="stat-label">Obras activas</div><div class="stat-value" id="stat-obras">—</div><div class="stat-sub">desde Notion</div></div>
+      <div class="stat-card"><div class="stat-label">Ultima visita</div><div class="stat-value" id="stat-visita">—</div><div class="stat-sub" id="stat-visita-sub">sin registros</div></div>
     </div>
-    <div class="section-header">Módulos activos</div>
+    <div class="section-header">Modulos activos</div>
     <div class="modules-grid">
-      <div class="module-card" onclick="openModule('facturas')">
-        <div class="module-icon mod-teal">🧾</div>
-        <div class="module-name">Facturas</div>
-        <div class="module-desc">Genera PDFs A y B</div>
-        <span class="module-badge badge-ok">Activo</span>
-      </div>
-      <div class="module-card" onclick="openModule('extracto')">
-        <div class="module-icon mod-amber">🏦</div>
-        <div class="module-name">Extracto banco</div>
-        <div class="module-desc">CAJAMAR → Notion</div>
-        <span class="module-badge badge-ok">Activo</span>
-      </div>
-      <div class="module-card" onclick="openModule('visita')">
-        <div class="module-icon mod-blue">📷</div>
-        <div class="module-name">Visita obra</div>
-        <div class="module-desc">Fotos → Drive</div>
-        <span class="module-badge badge-ok">Activo</span>
-      </div>
-      <div class="module-card" onclick="openModule('obras')">
-        <div class="module-icon mod-coral">🏗️</div>
-        <div class="module-name">Obras</div>
-        <div class="module-desc">Estado y seguimiento</div>
-        <span class="module-badge badge-soon">Próximo</span>
-      </div>
+      <div class="module-card" onclick="openModule('facturas')"><div class="module-icon mod-teal">🧾</div><div class="module-name">Facturas</div><div class="module-desc">Genera PDFs A y B</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('extracto')"><div class="module-icon mod-amber">🏦</div><div class="module-name">Extracto banco</div><div class="module-desc">CAJAMAR a Notion</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('visita')"><div class="module-icon mod-blue">📷</div><div class="module-name">Visita obra</div><div class="module-desc">Fotos a Drive</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('obras')"><div class="module-icon mod-coral">🏗️</div><div class="module-name">Obras</div><div class="module-desc">Estado y seguimiento</div><span class="module-badge badge-soon">Proximo</span></div>
     </div>
-    <button class="add-module-btn" onclick="openModule('nuevo')">＋ &nbsp;Añadir módulo</button>
+    <button class="add-module-btn" onclick="openModule('nuevo')">+ Anadir modulo</button>
     <div class="section-header">Actividad reciente</div>
-    <div class="activity-list" id="home-actividad">
-      <div class="activity-item">
-        <div class="activity-dot dot-teal"></div>
-        <div>
-          <div class="activity-text">Extracto CAJAMAR procesado</div>
-          <div class="activity-time">Hoy · 10:32</div>
-        </div>
-      </div>
-      <div class="activity-item">
-        <div class="activity-dot dot-blue"></div>
-        <div>
-          <div class="activity-text">Visita obra · C/ Cáceres · 4 fotos</div>
-          <div class="activity-time">Ayer · 16:15</div>
-        </div>
-      </div>
-      <div class="activity-item">
-        <div class="activity-dot dot-amber"></div>
-        <div>
-          <div class="activity-text">Factura LyT 2026/2T/10 generada</div>
-          <div class="activity-time">Hace 3 días</div>
-        </div>
-      </div>
+    <div class="activity-list">
+      <div class="activity-item"><div class="activity-dot dot-teal"></div><div><div class="activity-text">Extracto CAJAMAR procesado</div><div class="activity-time">Hoy 10:32</div></div></div>
+      <div class="activity-item"><div class="activity-dot dot-blue"></div><div><div class="activity-text">Visita obra C/ Caceres 4 fotos</div><div class="activity-time">Ayer 16:15</div></div></div>
+      <div class="activity-item"><div class="activity-dot dot-amber"></div><div><div class="activity-text">Factura LyT 2026/2T/10 generada</div><div class="activity-time">Hace 3 dias</div></div></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ VISTA: VISITA OBRA ═══ -->
 <div class="view" id="view-visita">
   <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
+    <button class="topbar-back" onclick="goBack()">atras</button>
     <div class="topbar-title">Visita obra</div>
-    <button style="background:none;border:none;color:var(--teal-light);font-size:20px;cursor:pointer;padding:4px;" onclick="openModule('visita-config')" title="Configurar">⚙</button>
+    <button style="background:none;border:none;color:var(--teal-light);font-size:20px;cursor:pointer;padding:4px;" onclick="openModule('visita-config')">config</button>
   </div>
   <div class="scroll-area">
-
-    <!-- Banner si no hay URL configurada -->
-    <div class="vo-config-banner" id="vo-banner">
-      Falta la URL del script. <a href="#" onclick="openModule('visita-config');return false;">Configurar ahora →</a>
-    </div>
-
-    <!-- Selector de obra -->
+    <div class="vo-config-banner" id="vo-banner">Falta la URL del script. <a href="#" onclick="openModule('visita-config');return false;">Configurar ahora</a></div>
     <div class="vo-obra-selector">
       <label>Obra</label>
-      <select id="vo-obra-select">
-        <option value="">Cargando obras...</option>
-      </select>
+      <select id="vo-obra-select"><option value="">Cargando obras...</option></select>
     </div>
-
-    <!-- Zona de fotos -->
     <div class="vo-dropzone" id="vo-dropzone" onclick="document.getElementById('vo-file-input').click()">
       <div class="vo-dropzone-icon">📸</div>
-      <div class="vo-dropzone-text">Toca para añadir fotos</div>
-      <div class="vo-dropzone-sub">o arrastra aquí desde el carrete</div>
+      <div class="vo-dropzone-text">Toca para anadir fotos</div>
+      <div class="vo-dropzone-sub">o arrastra aqui desde el carrete</div>
     </div>
     <input type="file" id="vo-file-input" accept="image/*" multiple capture="environment" />
-
-    <!-- Previsualización -->
     <div class="vo-preview-grid" id="vo-preview-grid"></div>
-
-    <!-- Comentario de visita -->
     <div id="vo-comentario-area" style="display:none;padding:0 16px;margin-top:10px;">
       <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;">Comentario de la visita</label>
       <textarea id="vo-comentario" rows="3" placeholder="Describe el estado de la obra, trabajos realizados..." style="width:100%;background:var(--surface);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:12px 14px;font-size:14px;color:var(--text-1);resize:vertical;font-family:inherit;"></textarea>
     </div>
-
-    <!-- Botón subir -->
-    <button class="vo-btn-subir" id="vo-btn-subir" disabled onclick="voSubirFotos()">
-      Subir fotos a Drive
-    </button>
-
-    <!-- Barra de progreso -->
+    <button class="vo-btn-subir" id="vo-btn-subir" disabled onclick="voSubirFotos()">Subir fotos a Drive</button>
     <div class="vo-progress" id="vo-progress">
       <div class="vo-progress-bar-bg"><div class="vo-progress-bar" id="vo-progress-bar"></div></div>
-      <div class="vo-progress-label" id="vo-progress-label">Subiendo…</div>
+      <div class="vo-progress-label" id="vo-progress-label">Subiendo...</div>
     </div>
-
-    <!-- Resultado -->
     <div class="vo-result" id="vo-result"></div>
-
-    <!-- Historial local -->
     <div class="section-header" style="margin-top:8px">Historial reciente</div>
-    <div class="vo-historial" id="vo-historial">
-      <div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin visitas registradas aún</div>
-    </div>
-
+    <div class="vo-historial" id="vo-historial"><div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin visitas registradas aun</div></div>
   </div>
 </div>
 
-<!-- ═══ VISTA: VISITA CONFIG ═══ -->
 <div class="view" id="view-visita-config">
   <div class="topbar">
-    <button class="topbar-back" onclick="goBack('visita')">← Visita obra</button>
+    <button class="topbar-back" onclick="goBack('visita')">atras</button>
     <div class="topbar-title">Configurar script</div>
     <div style="width:40px"></div>
   </div>
@@ -346,119 +233,57 @@
     <div class="module-header">
       <div class="module-header-icon mod-blue">⚙️</div>
       <div class="module-header-title">URL del Apps Script</div>
-      <div class="module-header-desc">Pega aquí la URL de despliegue de tu Google Apps Script. Es la misma que usaba la app anterior de Visita Obra.</div>
+      <div class="module-header-desc">Pega aqui la URL de despliegue de tu Google Apps Script.</div>
     </div>
     <div class="vo-url-form">
       <label>URL del script desplegado</label>
-      <input type="url" id="vo-script-url-input" placeholder="https://script.google.com/macros/s/…/exec" />
-      <div class="vo-url-hint">La encuentras en script.google.com → tu proyecto → Implementar → Gestionar implementaciones → copiar URL.</div>
+      <input type="url" id="vo-script-url-input" placeholder="https://script.google.com/macros/s/.../exec" />
+      <div class="vo-url-hint">La encuentras en script.google.com, tu proyecto, Implementar, Gestionar implementaciones, copiar URL.</div>
     </div>
     <div class="vo-notion-token-form">
-      <label>Token de integración Notion</label>
-      <input type="password" id="vo-notion-token-input" placeholder="secret_..." />
-      <div class="vo-url-hint">Para cargar las obras desde Notion. Ve a notion.so/my-integrations → tu integración → copiar el token interno.</div>
-      <button class="vo-url-save" onclick="voGuardarConfig()">Guardar configuración</button>
+      <label>Token de integracion Notion</label>
+      <input type="password" id="vo-notion-token-input" placeholder="ntn_..." />
+      <div class="vo-url-hint">Token de tu integracion de Notion.</div>
+      <button class="vo-url-save" onclick="voGuardarConfig()">Guardar configuracion</button>
     </div>
   </div>
 </div>
 
-<!-- ═══ VISTA: FACTURAS ═══ -->
 <div class="view" id="view-facturas">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Facturas</div>
-    <div style="width:56px"></div>
-  </div>
-  <div class="scroll-area">
-    <div class="module-header">
-      <div class="module-header-icon mod-teal">🧾</div>
-      <div class="module-header-title">Facturas</div>
-      <div class="module-header-desc">Genera facturas en PDF para Levante y Terral (plantilla B) o para tu práctica de arquitecto (plantilla A).</div>
-    </div>
-    <div class="coming-soon-body">
-      <div class="coming-soon-icon">🛠️</div>
-      <div class="coming-soon-title">Módulo en construcción</div>
-      <div class="coming-soon-desc">El formulario de facturas estará en la Fase 3. Mientras tanto usa el Proyecto de Claude habitual.</div>
-    </div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">atras</button><div class="topbar-title">Facturas</div><div style="width:56px"></div></div>
+  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-teal">🧾</div><div class="module-header-title">Facturas</div><div class="module-header-desc">Genera facturas en PDF para Levante y Terral o para tu practica de arquitecto.</div></div><div class="coming-soon-body"><div class="coming-soon-icon">🛠️</div><div class="coming-soon-title">Modulo en construccion</div><div class="coming-soon-desc">Estara en la Fase 3. Usa el Proyecto de Claude habitual.</div></div></div>
 </div>
 
-<!-- ═══ VISTA: EXTRACTO ═══ -->
 <div class="view" id="view-extracto">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Extracto banco</div>
-    <div style="width:56px"></div>
-  </div>
-  <div class="scroll-area">
-    <div class="module-header">
-      <div class="module-header-icon mod-amber">🏦</div>
-      <div class="module-header-title">Extracto CAJAMAR</div>
-      <div class="module-header-desc">Sube un PDF del extracto y los movimientos se sincronizan automáticamente en Notion, sin duplicados.</div>
-    </div>
-    <div class="coming-soon-body">
-      <div class="coming-soon-icon">🛠️</div>
-      <div class="coming-soon-title">Módulo en construcción</div>
-      <div class="coming-soon-desc">Estará disponible en la Fase 3. Mientras tanto usa el Proyecto de Claude habitual.</div>
-    </div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">atras</button><div class="topbar-title">Extracto banco</div><div style="width:56px"></div></div>
+  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-amber">🏦</div><div class="module-header-title">Extracto CAJAMAR</div><div class="module-header-desc">Sube un PDF del extracto y los movimientos se sincronizan en Notion.</div></div><div class="coming-soon-body"><div class="coming-soon-icon">🛠️</div><div class="coming-soon-title">Modulo en construccion</div><div class="coming-soon-desc">Estara en la Fase 3. Usa el Proyecto de Claude habitual.</div></div></div>
 </div>
 
-<!-- ═══ VISTA: OBRAS ═══ -->
 <div class="view" id="view-obras">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Obras</div>
-    <div style="width:56px"></div>
-  </div>
-  <div class="scroll-area">
-    <div class="module-header">
-      <div class="module-header-icon mod-coral">🏗️</div>
-      <div class="module-header-title">Obras</div>
-      <div class="module-header-desc">Seguimiento de obras activas desde tu base de datos Notion.</div>
-    </div>
-    <div class="coming-soon-body">
-      <div class="coming-soon-icon">📋</div>
-      <div class="coming-soon-title">Próximamente</div>
-      <div class="coming-soon-desc">Conectará con OBRAS (BD) de Notion para ver el estado en tiempo real.</div>
-    </div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">atras</button><div class="topbar-title">Obras</div><div style="width:56px"></div></div>
+  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-coral">🏗️</div><div class="module-header-title">Obras</div><div class="module-header-desc">Seguimiento desde Notion.</div></div><div class="coming-soon-body"><div class="coming-soon-icon">📋</div><div class="coming-soon-title">Proximamente</div><div class="coming-soon-desc">Conectara con OBRAS (BD) de Notion.</div></div></div>
 </div>
 
-<!-- ═══ VISTA: NUEVO MÓDULO ═══ -->
 <div class="view" id="view-nuevo">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goBack()">← Inicio</button>
-    <div class="topbar-title">Añadir módulo</div>
-    <div style="width:56px"></div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goBack()">atras</button><div class="topbar-title">Anadir modulo</div><div style="width:56px"></div></div>
   <div class="scroll-area">
-    <div class="section-header">Próximos módulos</div>
+    <div class="section-header">Proximos modulos</div>
     <div class="modules-grid">
-      <div class="module-card"><div class="module-icon mod-coral">🏗️</div><div class="module-name">Obras</div><div class="module-desc">Seguimiento Notion</div><span class="module-badge badge-soon">Próximo</span></div>
-      <div class="module-card"><div class="module-icon mod-purple">📊</div><div class="module-name">Certificaciones</div><div class="module-desc">Cert. por tajo</div><span class="module-badge badge-soon">Próximo</span></div>
-      <div class="module-card"><div class="module-icon mod-teal">📁</div><div class="module-name">Presupuestos</div><div class="module-desc">Genera y gestiona</div><span class="module-badge badge-soon">Próximo</span></div>
-      <div class="module-card"><div class="module-icon mod-gray">🦺</div><div class="module-name">PRL</div><div class="module-desc">Docs PREVETEC</div><span class="module-badge badge-soon">Próximo</span></div>
+      <div class="module-card"><div class="module-icon mod-coral">🏗️</div><div class="module-name">Obras</div><div class="module-desc">Seguimiento Notion</div><span class="module-badge badge-soon">Proximo</span></div>
+      <div class="module-card"><div class="module-icon mod-purple">📊</div><div class="module-name">Certificaciones</div><div class="module-desc">Cert. por tajo</div><span class="module-badge badge-soon">Proximo</span></div>
+      <div class="module-card"><div class="module-icon mod-teal">📁</div><div class="module-name">Presupuestos</div><div class="module-desc">Genera y gestiona</div><span class="module-badge badge-soon">Proximo</span></div>
+      <div class="module-card"><div class="module-icon mod-gray">🦺</div><div class="module-name">PRL</div><div class="module-desc">Docs PREVETEC</div><span class="module-badge badge-soon">Proximo</span></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ VISTA: AJUSTES ═══ -->
 <div class="view" id="view-ajustes">
-  <div class="topbar">
-    <div><div class="topbar-title">Ajustes</div></div>
-    <div class="topbar-avatar">JL</div>
-  </div>
+  <div class="topbar"><div><div class="topbar-title">Ajustes</div></div><div class="topbar-avatar">JL</div></div>
   <div class="scroll-area">
     <div class="profile-card">
-      <div class="profile-name">José Luis Bustamante Ibáñez</div>
-      <div class="profile-role">Arquitecto · Colegiado nº 685</div>
-      <div class="profile-pills">
-        <span class="profile-pill">Levante y Terral SL</span>
-        <span class="profile-pill">CAJAMAR</span>
-        <span class="profile-pill">Notion</span>
-        <span class="profile-pill">Google Drive</span>
-      </div>
+      <div class="profile-name">Jose Luis Bustamante Ibanez</div>
+      <div class="profile-role">Arquitecto Colegiado n 685</div>
+      <div class="profile-pills"><span class="profile-pill">Levante y Terral SL</span><span class="profile-pill">CAJAMAR</span><span class="profile-pill">Notion</span><span class="profile-pill">Google Drive</span></div>
     </div>
     <div class="section-header">Conexiones</div>
     <div class="settings-list">
@@ -469,35 +294,37 @@
     <div class="section-header">Empresa</div>
     <div class="settings-list">
       <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-teal">🏢</div><div class="settings-label">Levante y Terral SL</div></div><div class="settings-value">NIF B27522895</div></div>
-      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-coral">🏛️</div><div class="settings-label">Colegiado</div></div><div class="settings-value">Nº 685</div></div>
+      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-coral">🏛️</div><div class="settings-label">Colegiado</div></div><div class="settings-value">N 685</div></div>
     </div>
     <div class="section-header">App</div>
     <div class="settings-list">
-      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-gray">ℹ️</div><div class="settings-label">Versión</div></div><div class="settings-value">1.1.0 · Fase 2</div></div>
+      <div class="settings-item"><div class="settings-item-left"><div class="settings-item-icon mod-gray">ℹ️</div><div class="settings-label">Version</div></div><div class="settings-value">1.2.0 Fase 2</div></div>
     </div>
   </div>
 </div>
 
-<!-- NAV BAR -->
 <nav class="nav-bar">
   <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">⊞</span><span class="nav-label">Inicio</span></button>
-  <button class="nav-item" id="nav-modulos" onclick="switchTab('modulos')"><span class="nav-icon">⬡</span><span class="nav-label">Módulos</span></button>
+  <button class="nav-item" id="nav-modulos" onclick="switchTab('modulos')"><span class="nav-icon">⬡</span><span class="nav-label">Modulos</span></button>
   <button class="nav-item" id="nav-ajustes" onclick="switchTab('ajustes')"><span class="nav-icon">⚙</span><span class="nav-label">Ajustes</span></button>
 </nav>
 
 <script>
-// ── NAVEGACIÓN ──────────────────────────────────────────────
-let currentTab = 'home';
-let prevView   = null;
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrunAzE0mJPDXKgWR5mSXiWJK-vUFQaOYqHhqLHcwmZIDkKBGCggMcXzpQm10a_e_7wA/exec';
+var VO_KEY_URL = 'lyt_vo_script_url';
+var VO_KEY_HISTORIAL = 'lyt_vo_historial';
+var voFotos = [];
+var currentTab = 'home';
+var prevView = null;
 
 function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  const el = document.getElementById('view-' + id);
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+  var el = document.getElementById('view-' + id);
   if (el) { el.classList.add('active'); window.scrollTo(0,0); }
 }
 function switchTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById('nav-' + tab).classList.add('active');
   if (tab === 'home')    { prevView = null; showView('home'); }
   if (tab === 'modulos') { prevView = null; showView('nuevo'); }
@@ -511,56 +338,53 @@ function openModule(id) {
 function goBack(target) {
   if (target) { showView(target); return; }
   if (prevView) { showView(prevView); prevView = null; }
-  else { showView(currentTab === 'home' ? 'home' : currentTab === 'modulos' ? 'nuevo' : 'ajustes'); }
+  else { showView('home'); }
 }
 
-// ── VISITA OBRA ─────────────────────────────────────────────
-const VO_KEY_URL      = 'lyt_vo_script_url';
-const VO_KEY_HISTORIAL = 'lyt_vo_historial';
-
-let voFotos = []; // { file, dataUrl, nombre }
-
-function voGetUrl() { return localStorage.getItem(VO_KEY_URL) || 'https://script.google.com/macros/s/AKfycbyrunAzE0mJPDXKgWR5mSXiWJK-vUFQaOYqHhqLHcwmZIDkKBGCggMcXzpQm10a_e_7wA/exec'; }
+function voGetUrl() { return localStorage.getItem(VO_KEY_URL) || SCRIPT_URL; }
 
 function voInitView() {
-  const url = voGetUrl();
-  document.getElementById('vo-banner').classList.toggle('show', !url);
+  var url = voGetUrl();
+  document.getElementById('vo-banner').classList.toggle('show', !localStorage.getItem(VO_KEY_URL));
   document.getElementById('vo-script-url-input').value = url;
-  const token = localStorage.getItem('lyt_notion_token') || '';
-  if(document.getElementById('vo-notion-token-input')) document.getElementById('vo-notion-token-input').value = token;
+  var token = localStorage.getItem('lyt_notion_token') || '';
+  var ti = document.getElementById('vo-notion-token-input');
+  if (ti) ti.value = token;
   voActualizarBoton();
   voRenderHistorial();
   voActualizarEstadoAjustes();
   voCargarObras();
 }
 
-async function voCargarObras() {
-  const url = 'https://script.google.com/macros/s/AKfycbyrunAzE0mJPDXKgWR5mSXiWJK-vUFQaOYqHhqLHcwmZIDkKBGCggMcXzpQm10a_e_7wA/exec';
-  const select = document.getElementById('vo-obra-select');
+function voCargarObras() {
+  var url = voGetUrl();
+  var select = document.getElementById('vo-obra-select');
   select.innerHTML = '<option value="">Cargando obras...</option>';
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'obras' })
-    });
-    const data = await res.json();
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'obras' })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
     if (data.ok && data.obras && data.obras.length > 0) {
-      const opts = data.obras.map(function(o) {
+      var opts = data.obras.map(function(o) {
         return '<option value="' + o.nombre + '">' + o.nombre + '</option>';
       }).join('');
       select.innerHTML = '<option value="">-- Selecciona una obra --</option>' + opts;
     } else {
       select.innerHTML = '<option value="">Sin obras activas</option>';
     }
-  } catch(e) {
+  })
+  .catch(function() {
     select.innerHTML = '<option value="">Error al cargar obras</option>';
-  }
+  });
 }
 
-function voGuardarUrl() { voGuardarConfig(); }
 function voGuardarConfig() {
-  const url = document.getElementById('vo-script-url-input').value.trim();
-  const token = document.getElementById('vo-notion-token-input') ? document.getElementById('vo-notion-token-input').value.trim() : '';
+  var url = document.getElementById('vo-script-url-input').value.trim();
+  var ti = document.getElementById('vo-notion-token-input');
+  var token = ti ? ti.value.trim() : '';
   if (!url || !url.startsWith('https://')) { alert('Pega una URL valida que empiece por https://'); return; }
   localStorage.setItem(VO_KEY_URL, url);
   if (token) localStorage.setItem('lyt_notion_token', token);
@@ -571,31 +395,28 @@ function voGuardarConfig() {
 }
 
 function voActualizarEstadoAjustes() {
-  const el = document.getElementById('ajustes-url-state');
-  if (el) el.textContent = voGetUrl() ? 'Configurada ✓' : 'No configurada';
+  var el = document.getElementById('ajustes-url-state');
+  if (el) el.textContent = localStorage.getItem(VO_KEY_URL) ? 'Configurada' : 'No configurada';
 }
 
-// Selector de archivos
 document.getElementById('vo-file-input').addEventListener('change', function(e) {
   Array.from(e.target.files).forEach(voAgregarFoto);
   this.value = '';
 });
 
-// Drag & drop
-const dropzone = document.getElementById('vo-dropzone');
-dropzone.addEventListener('dragover',  e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
-dropzone.addEventListener('dragleave', ()  => dropzone.classList.remove('drag-over'));
-dropzone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropzone.classList.remove('drag-over');
-  Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')).forEach(voAgregarFoto);
+var dropzone = document.getElementById('vo-dropzone');
+dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drag-over'); });
+dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drag-over'); });
+dropzone.addEventListener('drop', function(e) {
+  e.preventDefault(); dropzone.classList.remove('drag-over');
+  Array.from(e.dataTransfer.files).filter(function(f) { return f.type.startsWith('image/'); }).forEach(voAgregarFoto);
 });
 
 function voAgregarFoto(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    const id = Date.now() + Math.random();
-    voFotos.push({ id, file, dataUrl: e.target.result, nombre: file.name });
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var id = Date.now() + Math.random();
+    voFotos.push({ id: id, file: file, dataUrl: e.target.result, nombre: file.name });
     voRenderPreviews();
     voActualizarBoton();
   };
@@ -603,133 +424,113 @@ function voAgregarFoto(file) {
 }
 
 function voEliminarFoto(id) {
-  voFotos = voFotos.filter(f => f.id !== id);
+  voFotos = voFotos.filter(function(f) { return f.id !== id; });
   voRenderPreviews();
   voActualizarBoton();
 }
 
 function voRenderPreviews() {
-  const grid = document.getElementById('vo-preview-grid');
+  var grid = document.getElementById('vo-preview-grid');
   if (voFotos.length === 0) { grid.innerHTML = ''; return; }
-  grid.innerHTML = voFotos.map(function(f){ return '<div class="vo-preview-item"><img src="'+f.dataUrl+'" /><button class="vo-preview-remove" onclick="voEliminarFoto('+f.id+')">✕</button></div>'; }).join('');
+  grid.innerHTML = voFotos.map(function(f) {
+    return '<div class="vo-preview-item"><img src="' + f.dataUrl + '" /><button class="vo-preview-remove" onclick="voEliminarFoto(' + f.id + ')">X</button></div>';
+  }).join('');
 }
 
 function voActualizarBoton() {
-  const btn = document.getElementById('vo-btn-subir');
-  const obra = document.getElementById('vo-obra-select').value;
+  var btn = document.getElementById('vo-btn-subir');
+  var obra = document.getElementById('vo-obra-select').value;
   btn.disabled = voFotos.length === 0 || !obra;
   btn.textContent = voFotos.length > 0 ? ('Subir ' + voFotos.length + ' foto' + (voFotos.length > 1 ? 's' : '') + ' a Drive') : 'Subir fotos a Drive';
   document.getElementById('vo-comentario-area').style.display = voFotos.length > 0 ? 'block' : 'none';
 }
 document.getElementById('vo-obra-select').addEventListener('change', voActualizarBoton);
 
-async function voSubirFotos() {
-  const url  = voGetUrl();
-  const obra = document.getElementById('vo-obra-select').value;
-  if (!url) { openModule('visita-config'); return; }
-  if (!obra || voFotos.length === 0) return;
+function voSubirFotos() {
+  var url = voGetUrl();
+  var obra = document.getElementById('vo-obra-select').value;
+  if (!url || !obra || voFotos.length === 0) return;
 
-  const btn      = document.getElementById('vo-btn-subir');
-  const progress = document.getElementById('vo-progress');
-  const bar      = document.getElementById('vo-progress-bar');
-  const label    = document.getElementById('vo-progress-label');
-  const result   = document.getElementById('vo-result');
+  var btn = document.getElementById('vo-btn-subir');
+  var progress = document.getElementById('vo-progress');
+  var bar = document.getElementById('vo-progress-bar');
+  var label = document.getElementById('vo-progress-label');
+  var result = document.getElementById('vo-result');
 
   btn.disabled = true;
   progress.classList.add('show');
   result.classList.remove('show');
 
-  // Fecha de hoy
-  const hoy = new Date();
-  const fecha = hoy.toISOString().slice(0,10); // yyyy-MM-dd
+  var fecha = new Date().toISOString().slice(0,10);
+  var comentario = document.getElementById('vo-comentario') ? document.getElementById('vo-comentario').value.trim() : '';
 
-  // Convertir fotos a base64 puro
-  const fotosPayload = voFotos.map((f, i) => {
-    const b64 = f.dataUrl.split(',')[1];
-    const ext  = f.file.type.split('/')[1] || 'jpg';
-    const ts   = Date.now() + i;
-    return { base64: b64, mime: f.file.type, nombre: fecha + '_' + obra.replace(/\s+/g,'-') + '_' + ts + '.' + ext };
+  var fotosPayload = voFotos.map(function(f, i) {
+    var ext = f.file.type.split('/')[1] || 'jpg';
+    return { base64: f.dataUrl.split(',')[1], mime: f.file.type, nombre: fecha + '_' + obra.replace(/\s+/g,'-') + '_' + (Date.now()+i) + '.' + ext };
   });
 
-  // Subida con progreso simulado
-  let pct = 10;
+  var pct = 10;
   bar.style.width = pct + '%';
   label.textContent = 'Preparando ' + voFotos.length + ' foto' + (voFotos.length>1?'s':'') + '...';
-
-  const tick = setInterval(() => {
+  var tick = setInterval(function() {
     if (pct < 80) { pct += 5; bar.style.width = pct + '%'; }
   }, 400);
 
-  const comentario = document.getElementById('vo-comentario') ? document.getElementById('vo-comentario').value.trim() : '';
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ obra: obra, fecha: fecha, comentario: comentario, fotos: fotosPayload })
-    });
-    const data = await res.json();
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ obra: obra, fecha: fecha, comentario: comentario, fotos: fotosPayload })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
     clearInterval(tick);
-
     if (data.ok) {
       bar.style.width = '100%';
-      label.textContent = '¡Listo!';
+      label.textContent = 'Listo!';
       result.className = 'vo-result ok show';
-      result.innerHTML = '✅ ' + data.subidas.length + ' foto' + (data.subidas.length>1?'s':'') + ' subida' + (data.subidas.length>1?'s':'') + ' correctamente.<br><a href="' + data.carpeta + '" target="_blank">Ver carpeta en Drive →</a>';
-
-      // Guardar en historial local
-      voGuardarHistorial({ obra, fecha, n: data.subidas.length, url: data.carpeta });
-
-      // Actualizar stat de inicio
+      result.innerHTML = 'OK: ' + data.subidas.length + ' foto' + (data.subidas.length>1?'s':'') + ' subida' + (data.subidas.length>1?'s':'') + '. <a href="' + data.carpeta + '" target="_blank">Ver en Drive</a>';
+      voGuardarHistorial({ obra: obra, fecha: fecha, n: data.subidas.length, url: data.carpeta });
       document.getElementById('stat-visita').textContent = data.subidas.length;
-      document.getElementById('stat-visita-sub').textContent = obra.slice(0, 18);
-
-      // Limpiar
+      document.getElementById('stat-visita-sub').textContent = obra.slice(0,18);
       voFotos = [];
       voRenderPreviews();
       voRenderHistorial();
-      if(document.getElementById('vo-comentario')) { document.getElementById('vo-comentario').value = ''; document.getElementById('vo-comentario-area').style.display = 'none'; }
-
+      var c = document.getElementById('vo-comentario');
+      if (c) { c.value = ''; document.getElementById('vo-comentario-area').style.display = 'none'; }
     } else {
       throw new Error(data.error || 'Error desconocido');
     }
-  } catch(err) {
+  })
+  .catch(function(err) {
     clearInterval(tick);
     bar.style.width = '100%';
     bar.style.background = '#E24B4A';
     label.textContent = 'Error';
     result.className = 'vo-result err show';
-    result.innerHTML = '❌ No se pudieron subir las fotos.<br><small>' + err.message + '</small>';
-  }
+    result.innerHTML = 'Error al subir las fotos: ' + err.message;
+  });
 
-  setTimeout(() => {
-    btn.disabled = false;
-    voActualizarBoton();
-  }, 2000);
+  setTimeout(function() { btn.disabled = false; voActualizarBoton(); }, 2000);
 }
 
-// Historial local
 function voGuardarHistorial(entry) {
-  let h = JSON.parse(localStorage.getItem(VO_KEY_HISTORIAL) || '[]');
+  var h = JSON.parse(localStorage.getItem(VO_KEY_HISTORIAL) || '[]');
   h.unshift(entry);
-  if (h.length > 20) h = h.slice(0, 20);
+  if (h.length > 20) h = h.slice(0,20);
   localStorage.setItem(VO_KEY_HISTORIAL, JSON.stringify(h));
 }
 
 function voRenderHistorial() {
-  const h   = JSON.parse(localStorage.getItem(VO_KEY_HISTORIAL) || '[]');
-  const el  = document.getElementById('vo-historial');
-  if (h.length === 0) {
-    el.innerHTML = '<div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin visitas registradas aún</div>';
-    return;
-  }
-  el.innerHTML = h.map(function(e) { return '<div class="vo-historial-item"><div class="vo-historial-thumb">📷</div><div class="vo-historial-info"><div class="vo-historial-obra">' + e.obra + '</div><div class="vo-historial-meta">' + e.fecha + ' · ' + e.n + ' foto' + (e.n>1?'s':'') + '</div></div><a class="vo-historial-link" href="' + e.url + '" target="_blank">↗</a></div>'; }).join('');
+  var h = JSON.parse(localStorage.getItem(VO_KEY_HISTORIAL) || '[]');
+  var el = document.getElementById('vo-historial');
+  if (h.length === 0) { el.innerHTML = '<div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin visitas registradas aun</div>'; return; }
+  el.innerHTML = h.map(function(e) {
+    return '<div class="vo-historial-item"><div class="vo-historial-thumb">📷</div><div class="vo-historial-info"><div class="vo-historial-obra">' + e.obra + '</div><div class="vo-historial-meta">' + e.fecha + ' - ' + e.n + ' foto' + (e.n>1?'s':'') + '</div></div><a class="vo-historial-link" href="' + e.url + '" target="_blank">ver</a></div>';
+  }).join('');
 }
 
-// ── INIT ────────────────────────────────────────────────────
 voActualizarEstadoAjustes();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function(){}); }
 </script>
 </body>
 </html>
