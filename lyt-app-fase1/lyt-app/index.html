@@ -360,20 +360,16 @@ function voCargarObras() {
   var url = voGetUrl();
   var select = document.getElementById('vo-obra-select');
   select.innerHTML = '<option value="">Cargando obras...</option>';
-  
-  // JSONP: unica forma de evitar CORS con Google Apps Script
-  var callbackName = 'lytObrasCallback_' + Date.now();
-  var script = document.createElement('script');
-  var timeout = setTimeout(function() {
-    select.innerHTML = '<option value="">Error al cargar obras</option>';
-    delete window[callbackName];
-    if (script.parentNode) script.parentNode.removeChild(script);
-  }, 10000);
-  
-  window[callbackName] = function(data) {
-    clearTimeout(timeout);
-    delete window[callbackName];
-    if (script.parentNode) script.parentNode.removeChild(script);
+
+  fetch(url, {
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'obras' })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
     if (data.ok && data.obras && data.obras.length > 0) {
       var opts = data.obras.map(function(o) {
         return '<option value="' + o.nombre + '">' + o.nombre + '</option>';
@@ -382,10 +378,10 @@ function voCargarObras() {
     } else {
       select.innerHTML = '<option value="">Sin obras activas</option>';
     }
-  };
-  
-  script.src = url + '?action=obras&callback=' + callbackName;
-  document.head.appendChild(script);
+  })
+  .catch(function(err) {
+    select.innerHTML = '<option value="">Error al cargar obras</option>';
+  });
 }
 
 function voGuardarConfig() {
@@ -485,6 +481,8 @@ function voSubirFotos() {
 
   fetch(url, {
     method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ obra: obra, fecha: fecha, comentario: comentario, fotos: fotosPayload })
   })
