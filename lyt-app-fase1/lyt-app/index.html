@@ -345,7 +345,7 @@ function voGetUrl() { return localStorage.getItem(VO_KEY_URL) || SCRIPT_URL; }
 
 function voInitView() {
   var url = voGetUrl();
-  document.getElementById('vo-banner').classList.toggle('show', !localStorage.getItem(VO_KEY_URL));
+  document.getElementById('vo-banner').classList.toggle('show', !voGetUrl());
   document.getElementById('vo-script-url-input').value = url;
   var token = localStorage.getItem('lyt_notion_token') || '';
   var ti = document.getElementById('vo-notion-token-input');
