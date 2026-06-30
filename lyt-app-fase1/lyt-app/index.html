@@ -157,6 +157,14 @@
     .vo-notion-token-form { padding: 0 16px 16px; }
     .vo-notion-token-form label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; margin-top: 16px; }
     .vo-notion-token-form input { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; color: var(--text-1); }
+    .hz-date-input { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 15px; color: var(--text-1); }
+    .hz-row { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 14px; margin: 0 16px 10px; position: relative; }
+    .hz-row-remove { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%; background: var(--red-light); color: var(--red-dark); border: none; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+    .hz-field { margin-bottom: 10px; padding-right: 28px; }
+    .hz-field:last-child { margin-bottom: 0; }
+    .hz-field label { font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 5px; }
+    .hz-field select, .hz-field input[type=number] { width: 100%; background: var(--bg); border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 14px; color: var(--text-1); appearance: none; -webkit-appearance: none; }
+    .hz-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
   </style>
 </head>
 <body>
@@ -177,6 +185,7 @@
       <div class="module-card" onclick="openModule('facturas')"><div class="module-icon mod-teal">🧾</div><div class="module-name">Facturas</div><div class="module-desc">Genera PDFs A y B</div><span class="module-badge badge-ok">Activo</span></div>
       <div class="module-card" onclick="openModule('extracto')"><div class="module-icon mod-amber">🏦</div><div class="module-name">Extracto banco</div><div class="module-desc">CAJAMAR a Notion</div><span class="module-badge badge-ok">Activo</span></div>
       <div class="module-card" onclick="openModule('visita')"><div class="module-icon mod-blue">📷</div><div class="module-name">Visita obra</div><div class="module-desc">Fotos a Drive</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('horas')"><div class="module-icon mod-purple">⏱️</div><div class="module-name">Horas</div><div class="module-desc">Parte diario de obra</div><span class="module-badge badge-ok">Activo</span></div>
       <div class="module-card" onclick="openModule('obras')"><div class="module-icon mod-coral">🏗️</div><div class="module-name">Obras</div><div class="module-desc">Estado y seguimiento</div><span class="module-badge badge-soon">Proximo</span></div>
     </div>
     <button class="add-module-btn" onclick="openModule('nuevo')">+ Anadir modulo</button>
@@ -246,6 +255,40 @@
       <div class="vo-url-hint">Token de tu integracion de Notion.</div>
       <button class="vo-url-save" onclick="voGuardarConfig()">Guardar configuracion</button>
     </div>
+  </div>
+</div>
+
+<div class="view" id="view-horas">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack()">atras</button>
+    <div class="topbar-title">Horas</div>
+    <button style="background:none;border:none;color:var(--teal-light);font-size:20px;cursor:pointer;padding:4px;" onclick="openModule('visita-config')">config</button>
+  </div>
+  <div class="scroll-area">
+    <div class="vo-config-banner" id="hz-banner">Falta la URL del script. <a href="#" onclick="openModule('visita-config');return false;">Configurar ahora</a></div>
+    <div class="vo-obra-selector">
+      <label>Fecha</label>
+      <input type="date" id="hz-fecha-input" class="hz-date-input" />
+    </div>
+    <div class="vo-obra-selector">
+      <label>Obra</label>
+      <select id="hz-obra-select"><option value="">Cargando obras...</option></select>
+    </div>
+    <div class="section-header" style="padding-top:16px">Trabajadores</div>
+    <div id="hz-filas"></div>
+    <button class="add-module-btn" onclick="hzAnadirFila()">+ Anadir trabajador</button>
+    <div style="padding:0 16px;margin-top:6px;">
+      <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;">Comentario (opcional)</label>
+      <textarea id="hz-comentario" rows="3" placeholder="Hoy han trabajado en... (puedes dictarlo por voz con el microfono del teclado)" style="width:100%;background:var(--surface);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:12px 14px;font-size:14px;color:var(--text-1);resize:vertical;font-family:inherit;"></textarea>
+    </div>
+    <button class="vo-btn-subir" id="hz-btn-guardar" disabled onclick="hzGuardarParte()">Guardar parte</button>
+    <div class="vo-progress" id="hz-progress">
+      <div class="vo-progress-bar-bg"><div class="vo-progress-bar" id="hz-progress-bar"></div></div>
+      <div class="vo-progress-label" id="hz-progress-label">Guardando...</div>
+    </div>
+    <div class="vo-result" id="hz-result"></div>
+    <div class="section-header" style="margin-top:8px">Historial reciente</div>
+    <div class="vo-historial" id="hz-historial"><div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin partes registrados aun</div></div>
   </div>
 </div>
 
@@ -334,6 +377,7 @@ function openModule(id) {
   prevView = currentTab === 'home' ? 'home' : (currentTab === 'modulos' ? 'nuevo' : 'ajustes');
   showView(id);
   if (id === 'visita') voInitView();
+  if (id === 'horas') hzInitView();
 }
 function goBack(target) {
   if (target) { showView(target); return; }
@@ -533,6 +577,204 @@ function voRenderHistorial() {
     return '<div class="vo-historial-item"><div class="vo-historial-thumb">📷</div><div class="vo-historial-info"><div class="vo-historial-obra">' + e.obra + '</div><div class="vo-historial-meta">' + e.fecha + ' - ' + e.n + ' foto' + (e.n>1?'s':'') + '</div></div><a class="vo-historial-link" href="' + e.url + '" target="_blank">ver</a></div>';
   }).join('');
 }
+
+// ===== MODULO HORAS =====
+var HZ_KEY_HISTORIAL = 'lyt_hz_historial';
+var HZ_TIPOS = ['Albañilería','Demolición','Ayudas de albañilería','Fontanería','Electricidad','Alicatado/Solados','Carpintería','Pintura/Acabados','Otros'];
+var hzFilas = [];
+var hzRidSeq = 0;
+var hzTrabajadores = [];
+
+function hzInitView() {
+  var url = voGetUrl();
+  document.getElementById('hz-banner').classList.toggle('show', !url);
+  if (!document.getElementById('hz-fecha-input').value) {
+    document.getElementById('hz-fecha-input').value = new Date().toISOString().slice(0,10);
+  }
+  hzCargarObras();
+  hzCargarTrabajadores();
+  hzRenderHistorial();
+  if (hzFilas.length === 0) hzAnadirFila();
+  hzActualizarBoton();
+}
+
+function hzCargarObras() {
+  var url = voGetUrl();
+  var select = document.getElementById('hz-obra-select');
+  select.innerHTML = '<option value="">Cargando obras...</option>';
+  fetch(url, {
+    method: 'POST', mode: 'cors', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'obras' })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.ok && data.obras && data.obras.length > 0) {
+      var opts = data.obras.map(function(o) { return '<option value="' + o.nombre + '">' + o.nombre + '</option>'; }).join('');
+      select.innerHTML = '<option value="">-- Selecciona una obra --</option>' + opts;
+    } else {
+      select.innerHTML = '<option value="">Sin obras activas</option>';
+    }
+    hzActualizarBoton();
+  })
+  .catch(function() { select.innerHTML = '<option value="">Error al cargar obras</option>'; });
+}
+
+function hzCargarTrabajadores() {
+  var url = voGetUrl();
+  fetch(url, {
+    method: 'POST', mode: 'cors', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'trabajadores' })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    hzTrabajadores = (data.ok && data.trabajadores) ? data.trabajadores : [];
+    hzRefrescarSelectsTrabajador();
+  })
+  .catch(function() { hzTrabajadores = []; });
+}
+
+function hzOpcionesTrabajador() {
+  if (hzTrabajadores.length === 0) return '<option value="">Sin trabajadores</option>';
+  return '<option value="">-- Trabajador --</option>' + hzTrabajadores.map(function(t) {
+    return '<option value="' + t.id + '">' + t.nombre + '</option>';
+  }).join('');
+}
+
+function hzRefrescarSelectsTrabajador() {
+  document.querySelectorAll('.hz-trabajador-select').forEach(function(sel) {
+    var current = sel.value;
+    sel.innerHTML = hzOpcionesTrabajador();
+    if (current) sel.value = current;
+  });
+}
+
+function hzOpcionesTipo() {
+  return HZ_TIPOS.map(function(t) { return '<option value="' + t + '">' + t + '</option>'; }).join('');
+}
+
+function hzAnadirFila() {
+  hzRidSeq++;
+  var rid = hzRidSeq;
+  hzFilas.push(rid);
+  var cont = document.getElementById('hz-filas');
+  var div = document.createElement('div');
+  div.className = 'hz-row';
+  div.setAttribute('data-rid', rid);
+  div.innerHTML =
+    '<button class="hz-row-remove" onclick="hzEliminarFila(' + rid + ')">\u2715</button>' +
+    '<div class="hz-field"><label>Trabajador</label><select class="hz-trabajador-select" data-rid="' + rid + '" onchange="hzActualizarBoton()">' + hzOpcionesTrabajador() + '</select></div>' +
+    '<div class="hz-field"><label>Horas</label><input type="number" class="hz-horas-input" data-rid="' + rid + '" min="0" step="0.5" placeholder="8" oninput="hzActualizarBoton()" /></div>' +
+    '<div class="hz-field"><label>Tipo de trabajo</label><select class="hz-tipo-select" data-rid="' + rid + '">' + hzOpcionesTipo() + '</select></div>';
+  cont.appendChild(div);
+  hzActualizarBoton();
+}
+
+function hzEliminarFila(rid) {
+  hzFilas = hzFilas.filter(function(r) { return r !== rid; });
+  var el = document.querySelector('.hz-row[data-rid="' + rid + '"]');
+  if (el) el.remove();
+  hzActualizarBoton();
+}
+
+function hzFilasValidas() {
+  var rows = Array.from(document.querySelectorAll('.hz-row'));
+  return rows.map(function(row) {
+    var selTrab = row.querySelector('.hz-trabajador-select');
+    var trabajadorId = selTrab.value;
+    var trabajadorNombre = selTrab.selectedOptions[0] ? selTrab.selectedOptions[0].textContent : '';
+    var horas = parseFloat(row.querySelector('.hz-horas-input').value);
+    var tipo = row.querySelector('.hz-tipo-select').value;
+    return { trabajadorId: trabajadorId, trabajadorNombre: trabajadorNombre, horas: horas, tipo: tipo };
+  }).filter(function(r) { return r.trabajadorId && r.horas > 0; });
+}
+
+function hzActualizarBoton() {
+  var btn = document.getElementById('hz-btn-guardar');
+  var obra = document.getElementById('hz-obra-select').value;
+  btn.disabled = !obra || hzFilasValidas().length === 0;
+}
+
+function hzGuardarParte() {
+  var url = voGetUrl();
+  var fecha = document.getElementById('hz-fecha-input').value;
+  var obra = document.getElementById('hz-obra-select').value;
+  var comentario = document.getElementById('hz-comentario').value.trim();
+  var registros = hzFilasValidas();
+  if (!url || !obra || registros.length === 0) return;
+
+  var btn = document.getElementById('hz-btn-guardar');
+  var progress = document.getElementById('hz-progress');
+  var bar = document.getElementById('hz-progress-bar');
+  var label = document.getElementById('hz-progress-label');
+  var result = document.getElementById('hz-result');
+
+  btn.disabled = true;
+  progress.classList.add('show');
+  result.classList.remove('show');
+  bar.style.width = '30%';
+  bar.style.background = '';
+  label.textContent = 'Guardando ' + registros.length + ' registro' + (registros.length > 1 ? 's' : '') + '...';
+
+  fetch(url, {
+    method: 'POST', mode: 'cors', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'guardarHoras',
+      fecha: fecha,
+      obra: obra,
+      comentario: comentario,
+      registros: registros.map(function(r) {
+        return { trabajadorId: r.trabajadorId, trabajadorNombre: r.trabajadorNombre, horas: r.horas, tipo: r.tipo };
+      })
+    })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      bar.style.width = '100%';
+      label.textContent = 'Listo!';
+      result.className = 'vo-result ok show';
+      result.innerHTML = 'Parte guardado: ' + registros.length + ' trabajador' + (registros.length > 1 ? 'es' : '') + ' en ' + obra + '.';
+      hzGuardarHistorial({ obra: obra, fecha: fecha, n: registros.length });
+      hzRenderHistorial();
+      document.getElementById('hz-comentario').value = '';
+      document.getElementById('hz-filas').innerHTML = '';
+      hzFilas = [];
+      hzAnadirFila();
+    } else {
+      throw new Error(data.error || 'Error desconocido');
+    }
+  })
+  .catch(function(err) {
+    bar.style.width = '100%';
+    bar.style.background = '#E24B4A';
+    label.textContent = 'Error';
+    result.className = 'vo-result err show';
+    result.innerHTML = 'Error al guardar el parte: ' + err.message;
+  })
+  .finally(function() {
+    setTimeout(function() { btn.disabled = false; hzActualizarBoton(); }, 1500);
+  });
+}
+
+function hzGuardarHistorial(entry) {
+  var h = JSON.parse(localStorage.getItem(HZ_KEY_HISTORIAL) || '[]');
+  h.unshift(entry);
+  if (h.length > 20) h = h.slice(0,20);
+  localStorage.setItem(HZ_KEY_HISTORIAL, JSON.stringify(h));
+}
+
+function hzRenderHistorial() {
+  var h = JSON.parse(localStorage.getItem(HZ_KEY_HISTORIAL) || '[]');
+  var el = document.getElementById('hz-historial');
+  if (h.length === 0) { el.innerHTML = '<div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin partes registrados aun</div>'; return; }
+  el.innerHTML = h.map(function(e) {
+    return '<div class="vo-historial-item"><div class="vo-historial-thumb">⏱️</div><div class="vo-historial-info"><div class="vo-historial-obra">' + e.obra + '</div><div class="vo-historial-meta">' + e.fecha + ' - ' + e.n + ' trabajador' + (e.n > 1 ? 'es' : '') + '</div></div></div>';
+  }).join('');
+}
+document.getElementById('hz-obra-select').addEventListener('change', hzActualizarBoton);
 
 voActualizarEstadoAjustes();
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function(){}); }
