@@ -165,6 +165,9 @@
     .hz-field label { font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 5px; }
     .hz-field select, .hz-field input[type=number] { width: 100%; background: var(--bg); border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 14px; color: var(--text-1); appearance: none; -webkit-appearance: none; }
     .hz-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+    .hz-tipos-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .hz-tipo-label { display: flex; align-items: center; gap: 5px; background: var(--bg); border: 0.5px solid var(--border-mid); border-radius: 99px; padding: 5px 10px; font-size: 13px; color: var(--text-1); cursor: pointer; }
+    .hz-tipo-label input { accent-color: var(--teal); width: 14px; height: 14px; }
   </style>
 </head>
 <body>
@@ -217,10 +220,6 @@
     </div>
     <input type="file" id="vo-file-input" accept="image/*" multiple capture="environment" />
     <div class="vo-preview-grid" id="vo-preview-grid"></div>
-    <div id="vo-comentario-area" style="display:none;padding:0 16px;margin-top:10px;">
-      <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;">Comentario de la visita</label>
-      <textarea id="vo-comentario" rows="3" placeholder="Describe el estado de la obra, trabajos realizados..." style="width:100%;background:var(--surface);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:12px 14px;font-size:14px;color:var(--text-1);resize:vertical;font-family:inherit;"></textarea>
-    </div>
     <button class="vo-btn-subir" id="vo-btn-subir" disabled onclick="voSubirFotos()">Subir fotos a Drive</button>
     <div class="vo-progress" id="vo-progress">
       <div class="vo-progress-bar-bg"><div class="vo-progress-bar" id="vo-progress-bar"></div></div>
@@ -463,7 +462,7 @@ function voAgregarFoto(file) {
   var reader = new FileReader();
   reader.onload = function(e) {
     var id = Date.now() + Math.random();
-    voFotos.push({ id: id, file: file, dataUrl: e.target.result, nombre: file.name });
+    voFotos.push({ id: id, file: file, dataUrl: e.target.result, nombre: file.name, comentario: '' });
     voRenderPreviews();
     voActualizarBoton();
   };
@@ -480,8 +479,17 @@ function voRenderPreviews() {
   var grid = document.getElementById('vo-preview-grid');
   if (voFotos.length === 0) { grid.innerHTML = ''; return; }
   grid.innerHTML = voFotos.map(function(f) {
-    return '<div class="vo-preview-item"><img src="' + f.dataUrl + '" /><button class="vo-preview-remove" onclick="voEliminarFoto(' + f.id + ')">X</button></div>';
+    return '<div class="vo-preview-item">' +
+      '<img src="' + f.dataUrl + '" />' +
+      '<button class="vo-preview-remove" onclick="voEliminarFoto(' + f.id + ')">X</button>' +
+      '<textarea class="vo-foto-comentario" placeholder="Comentario de esta foto..." rows="2" oninput="voUpdateComentario(' + f.id + ', this.value)" style="width:100%;margin-top:6px;background:var(--surface);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:8px 10px;font-size:13px;color:var(--text-1);resize:vertical;font-family:inherit;">' + (f.comentario || '') + '</textarea>' +
+      '</div>';
   }).join('');
+}
+
+function voUpdateComentario(id, val) {
+  var f = voFotos.find(function(x) { return x.id === id; });
+  if (f) f.comentario = val;
 }
 
 function voActualizarBoton() {
@@ -489,7 +497,6 @@ function voActualizarBoton() {
   var obra = document.getElementById('vo-obra-select').value;
   btn.disabled = voFotos.length === 0 || !obra;
   btn.textContent = voFotos.length > 0 ? ('Subir ' + voFotos.length + ' foto' + (voFotos.length > 1 ? 's' : '') + ' a Drive') : 'Subir fotos a Drive';
-  document.getElementById('vo-comentario-area').style.display = voFotos.length > 0 ? 'block' : 'none';
 }
 document.getElementById('vo-obra-select').addEventListener('change', voActualizarBoton);
 
@@ -509,11 +516,9 @@ function voSubirFotos() {
   result.classList.remove('show');
 
   var fecha = new Date().toISOString().slice(0,10);
-  var comentario = document.getElementById('vo-comentario') ? document.getElementById('vo-comentario').value.trim() : '';
-
   var fotosPayload = voFotos.map(function(f, i) {
     var ext = f.file.type.split('/')[1] || 'jpg';
-    return { base64: f.dataUrl.split(',')[1], mime: f.file.type, nombre: fecha + '_' + obra.replace(/\s+/g,'-') + '_' + (Date.now()+i) + '.' + ext };
+    return { base64: f.dataUrl.split(',')[1], mime: f.file.type, nombre: fecha + '_' + obra.replace(/\s+/g,'-') + '_' + (Date.now()+i) + '.' + ext, comentario: f.comentario || '' };
   });
 
   var pct = 10;
@@ -648,10 +653,14 @@ function hzRefrescarSelectsTrabajador() {
     sel.innerHTML = hzOpcionesTrabajador();
     if (current) sel.value = current;
   });
+  hzActualizarBoton();
 }
 
-function hzOpcionesTipo() {
-  return HZ_TIPOS.map(function(t) { return '<option value="' + t + '">' + t + '</option>'; }).join('');
+function hzOpcionesTipo(rid) {
+  return '<div class="hz-tipos-wrap">' + HZ_TIPOS.map(function(t) {
+    var cid = 'hz-tipo-' + rid + '-' + t.replace(/\W/g,'');
+    return '<label class="hz-tipo-label"><input type="checkbox" class="hz-tipo-cb" data-rid="' + rid + '" value="' + t + '" id="' + cid + '" onchange="hzActualizarBoton()"><span>' + t + '</span></label>';
+  }).join('') + '</div>';
 }
 
 function hzAnadirFila() {
@@ -666,7 +675,7 @@ function hzAnadirFila() {
     '<button class="hz-row-remove" onclick="hzEliminarFila(' + rid + ')">\u2715</button>' +
     '<div class="hz-field"><label>Trabajador</label><select class="hz-trabajador-select" data-rid="' + rid + '" onchange="hzActualizarBoton()">' + hzOpcionesTrabajador() + '</select></div>' +
     '<div class="hz-field"><label>Horas</label><input type="number" class="hz-horas-input" data-rid="' + rid + '" min="0" step="0.5" placeholder="8" oninput="hzActualizarBoton()" /></div>' +
-    '<div class="hz-field"><label>Tipo de trabajo</label><select class="hz-tipo-select" data-rid="' + rid + '">' + hzOpcionesTipo() + '</select></div>';
+    '<div class="hz-field"><label>Tipo de trabajo</label>' + hzOpcionesTipo(rid) + '</div>';
   cont.appendChild(div);
   hzActualizarBoton();
 }
@@ -685,8 +694,8 @@ function hzFilasValidas() {
     var trabajadorId = selTrab.value;
     var trabajadorNombre = selTrab.selectedOptions[0] ? selTrab.selectedOptions[0].textContent : '';
     var horas = parseFloat(row.querySelector('.hz-horas-input').value);
-    var tipo = row.querySelector('.hz-tipo-select').value;
-    return { trabajadorId: trabajadorId, trabajadorNombre: trabajadorNombre, horas: horas, tipo: tipo };
+    var tipos = Array.from(row.querySelectorAll('.hz-tipo-cb:checked')).map(function(cb) { return cb.value; });
+    return { trabajadorId: trabajadorId, trabajadorNombre: trabajadorNombre, horas: horas, tipos: tipos };
   }).filter(function(r) { return r.trabajadorId && r.horas > 0; });
 }
 
@@ -726,7 +735,7 @@ function hzGuardarParte() {
       obra: obra,
       comentario: comentario,
       registros: registros.map(function(r) {
-        return { trabajadorId: r.trabajadorId, trabajadorNombre: r.trabajadorNombre, horas: r.horas, tipo: r.tipo };
+        return { trabajadorId: r.trabajadorId, trabajadorNombre: r.trabajadorNombre, horas: r.horas, tipos: r.tipos };
       })
     })
   })
