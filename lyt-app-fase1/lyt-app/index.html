@@ -384,7 +384,11 @@ function goBack(target) {
   else { showView('home'); }
 }
 
-function voGetUrl() { return localStorage.getItem(VO_KEY_URL) || SCRIPT_URL; }
+function voGetUrl() {
+  var saved = localStorage.getItem(VO_KEY_URL);
+  if (saved && saved !== SCRIPT_URL) { localStorage.removeItem(VO_KEY_URL); return SCRIPT_URL; }
+  return saved || SCRIPT_URL;
+}
 
 function voInitView() {
   var url = voGetUrl();
