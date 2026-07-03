@@ -537,7 +537,7 @@ function voSubirFotos() {
     mode: 'cors',
     redirect: 'follow',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ obra: obra, fecha: fecha, comentario: comentario, fotos: fotosPayload })
+    body: JSON.stringify({ obra: obra, fecha: fecha, fotos: fotosPayload })
   })
   .then(function(res) { return res.json(); })
   .then(function(data) {
