@@ -218,7 +218,7 @@
       <div class="vo-dropzone-text">Toca para anadir fotos</div>
       <div class="vo-dropzone-sub">o arrastra aqui desde el carrete</div>
     </div>
-    <input type="file" id="vo-file-input" accept="image/*" multiple capture="environment" />
+    <input type="file" id="vo-file-input" accept="image/*" multiple />
     <div class="vo-preview-grid" id="vo-preview-grid"></div>
     <button class="vo-btn-subir" id="vo-btn-subir" disabled onclick="voSubirFotos()">Subir fotos a Drive</button>
     <div class="vo-progress" id="vo-progress">
@@ -469,8 +469,28 @@ function voAgregarFoto(file) {
     voFotos.push({ id: id, file: file, dataUrl: e.target.result, nombre: file.name, comentario: '' });
     voRenderPreviews();
     voActualizarBoton();
+    voGuardarCopiaLocal(file);
   };
   reader.readAsDataURL(file);
+}
+
+// Si el archivo tiene menos de 60s de antiguedad es una foto recien hecha con la camara
+// (no una ya existente elegida de la galeria): la descargamos como copia de seguridad
+// para no perderla si luego falla la subida a Drive por mala cobertura.
+function voGuardarCopiaLocal(file) {
+  if (!file.lastModified || (Date.now() - file.lastModified) > 60000) return;
+  try {
+    var url = URL.createObjectURL(file);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = file.name || ('foto_' + Date.now() + '.jpg');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+  } catch (err) {
+    console.warn('No se pudo guardar copia local de la foto', err);
+  }
 }
 
 function voEliminarFoto(id) {
