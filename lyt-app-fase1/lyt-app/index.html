@@ -118,12 +118,15 @@
     .vo-obra-selector { padding: 16px 16px 0; }
     .vo-obra-selector label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; }
     .vo-obra-selector select { width: 100%; background: var(--surface); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); padding: 12px 14px; font-size: 15px; color: var(--text-1); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
-    .vo-dropzone { margin: 16px 16px 0; border: 1.5px dashed var(--border-mid); border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; cursor: pointer; transition: background 0.15s, border-color 0.15s; background: var(--surface); }
+    .vo-dropzone { margin: 16px 16px 0; border: 1.5px dashed var(--border-mid); border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; transition: background 0.15s, border-color 0.15s; background: var(--surface); }
     .vo-dropzone.drag-over { background: var(--teal-pale); border-color: var(--teal-soft); }
     .vo-dropzone-icon  { font-size: 36px; margin-bottom: 8px; }
     .vo-dropzone-text  { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
-    .vo-dropzone-sub   { font-size: 12px; color: var(--text-3); }
-    #vo-file-input { display: none; }
+    .vo-dropzone-sub   { font-size: 12px; color: var(--text-3); margin-top: 10px; }
+    .vo-dropzone-actions { display: flex; gap: 10px; justify-content: center; margin-top: 4px; }
+    .vo-dropzone-btn { background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-md); padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .vo-dropzone-btn:active { background: var(--teal-dark); }
+    #vo-file-input-camara, #vo-file-input-galeria { display: none; }
     .vo-preview-grid { display: flex; flex-direction: column; gap: 12px; padding: 12px 16px 0; }
     .vo-preview-item { position: relative; border-radius: var(--radius-sm); background: var(--gray-light); overflow: visible; }
     .vo-preview-item img { width: 100%; max-height: 220px; object-fit: cover; border-radius: var(--radius-sm); display: block; }
@@ -213,12 +216,17 @@
       <label>Obra</label>
       <select id="vo-obra-select"><option value="">Cargando obras...</option></select>
     </div>
-    <div class="vo-dropzone" id="vo-dropzone" onclick="document.getElementById('vo-file-input').click()">
+    <div class="vo-dropzone" id="vo-dropzone">
       <div class="vo-dropzone-icon">📸</div>
-      <div class="vo-dropzone-text">Toca para anadir fotos</div>
+      <div class="vo-dropzone-text">Anadir fotos</div>
+      <div class="vo-dropzone-actions">
+        <button type="button" class="vo-dropzone-btn" onclick="document.getElementById('vo-file-input-camara').click()">📷 Hacer foto</button>
+        <button type="button" class="vo-dropzone-btn" onclick="document.getElementById('vo-file-input-galeria').click()">🖼️ Galeria</button>
+      </div>
       <div class="vo-dropzone-sub">o arrastra aqui desde el carrete</div>
     </div>
-    <input type="file" id="vo-file-input" accept="image/*" multiple />
+    <input type="file" id="vo-file-input-camara" accept="image/*" capture="environment" />
+    <input type="file" id="vo-file-input-galeria" accept="image/*" multiple />
     <div class="vo-preview-grid" id="vo-preview-grid"></div>
     <button class="vo-btn-subir" id="vo-btn-subir" disabled onclick="voSubirFotos()">Subir fotos a Drive</button>
     <div class="vo-progress" id="vo-progress">
@@ -449,10 +457,12 @@ function voActualizarEstadoAjustes() {
   if (el) el.textContent = localStorage.getItem(VO_KEY_URL) ? 'Configurada' : 'No configurada';
 }
 
-document.getElementById('vo-file-input').addEventListener('change', function(e) {
+function voHandleFileInputChange(e) {
   Array.from(e.target.files).forEach(voAgregarFoto);
-  this.value = '';
-});
+  e.target.value = '';
+}
+document.getElementById('vo-file-input-camara').addEventListener('change', voHandleFileInputChange);
+document.getElementById('vo-file-input-galeria').addEventListener('change', voHandleFileInputChange);
 
 var dropzone = document.getElementById('vo-dropzone');
 dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drag-over'); });
