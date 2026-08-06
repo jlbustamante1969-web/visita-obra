@@ -188,18 +188,15 @@
     </div>
     <div class="section-header">Modulos activos</div>
     <div class="modules-grid">
-      <div class="module-card" onclick="openModule('facturas')"><div class="module-icon mod-teal">🧾</div><div class="module-name">Facturas</div><div class="module-desc">Genera PDFs A y B</div><span class="module-badge badge-ok">Activo</span></div>
-      <div class="module-card" onclick="openModule('extracto')"><div class="module-icon mod-amber">🏦</div><div class="module-name">Extracto banco</div><div class="module-desc">CAJAMAR a Notion</div><span class="module-badge badge-ok">Activo</span></div>
       <div class="module-card" onclick="openModule('visita')"><div class="module-icon mod-blue">📷</div><div class="module-name">Visita obra</div><div class="module-desc">Fotos a Drive</div><span class="module-badge badge-ok">Activo</span></div>
       <div class="module-card" onclick="openModule('horas')"><div class="module-icon mod-purple">⏱️</div><div class="module-name">Horas</div><div class="module-desc">Parte diario de obra</div><span class="module-badge badge-ok">Activo</span></div>
+      <div class="module-card" onclick="openModule('gastos')"><div class="module-icon mod-amber">🧾</div><div class="module-name">Gastos</div><div class="module-desc">Gastos de obra con foto</div><span class="module-badge badge-ok">Activo</span></div>
       <div class="module-card" onclick="openModule('obras')"><div class="module-icon mod-coral">🏗️</div><div class="module-name">Obras</div><div class="module-desc">Estado y seguimiento</div><span class="module-badge badge-soon">Proximo</span></div>
     </div>
     <button class="add-module-btn" onclick="openModule('nuevo')">+ Anadir modulo</button>
     <div class="section-header">Actividad reciente</div>
     <div class="activity-list">
-      <div class="activity-item"><div class="activity-dot dot-teal"></div><div><div class="activity-text">Extracto CAJAMAR procesado</div><div class="activity-time">Hoy 10:32</div></div></div>
       <div class="activity-item"><div class="activity-dot dot-blue"></div><div><div class="activity-text">Visita obra C/ Caceres 4 fotos</div><div class="activity-time">Ayer 16:15</div></div></div>
-      <div class="activity-item"><div class="activity-dot dot-amber"></div><div><div class="activity-text">Factura LyT 2026/2T/10 generada</div><div class="activity-time">Hace 3 dias</div></div></div>
     </div>
   </div>
 </div>
@@ -299,14 +296,66 @@
   </div>
 </div>
 
-<div class="view" id="view-facturas">
-  <div class="topbar"><button class="topbar-back" onclick="goBack()">atras</button><div class="topbar-title">Facturas</div><div style="width:56px"></div></div>
-  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-teal">🧾</div><div class="module-header-title">Facturas</div><div class="module-header-desc">Genera facturas en PDF para Levante y Terral o para tu practica de arquitecto.</div></div><div class="coming-soon-body"><div class="coming-soon-icon">🛠️</div><div class="coming-soon-title">Modulo en construccion</div><div class="coming-soon-desc">Estara en la Fase 3. Usa el Proyecto de Claude habitual.</div></div></div>
-</div>
-
-<div class="view" id="view-extracto">
-  <div class="topbar"><button class="topbar-back" onclick="goBack()">atras</button><div class="topbar-title">Extracto banco</div><div style="width:56px"></div></div>
-  <div class="scroll-area"><div class="module-header"><div class="module-header-icon mod-amber">🏦</div><div class="module-header-title">Extracto CAJAMAR</div><div class="module-header-desc">Sube un PDF del extracto y los movimientos se sincronizan en Notion.</div></div><div class="coming-soon-body"><div class="coming-soon-icon">🛠️</div><div class="coming-soon-title">Modulo en construccion</div><div class="coming-soon-desc">Estara en la Fase 3. Usa el Proyecto de Claude habitual.</div></div></div>
+<div class="view" id="view-gastos">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goBack()">atras</button>
+    <div class="topbar-title">Gastos</div>
+    <button style="background:none;border:none;color:var(--teal-light);font-size:20px;cursor:pointer;padding:4px;" onclick="openModule('visita-config')">config</button>
+  </div>
+  <div class="scroll-area">
+    <div class="vo-config-banner" id="ga-banner">Falta la URL del script. <a href="#" onclick="openModule('visita-config');return false;">Configurar ahora</a></div>
+    <div class="vo-obra-selector">
+      <label>Fecha</label>
+      <input type="date" id="ga-fecha-input" class="hz-date-input" />
+    </div>
+    <div class="vo-obra-selector">
+      <label>Obra</label>
+      <select id="ga-obra-select"><option value="">Cargando obras...</option></select>
+    </div>
+    <div class="vo-obra-selector">
+      <label>Usuario</label>
+      <select id="ga-usuario-select"><option value="">Cargando...</option></select>
+    </div>
+    <div class="vo-obra-selector">
+      <label>Proveedor</label>
+      <input type="text" id="ga-proveedor-input" class="hz-date-input" placeholder="Nombre del proveedor" />
+    </div>
+    <div class="vo-obra-selector">
+      <label>Total con IVA</label>
+      <input type="number" id="ga-total-input" class="hz-date-input" min="0" step="0.01" placeholder="0,00" />
+    </div>
+    <div class="vo-obra-selector">
+      <label>Categoria</label>
+      <select id="ga-categoria-select">
+        <option value="Materiales/Albanileria">Materiales/Albanileria</option>
+        <option value="Gestion de residuos">Gestion de residuos</option>
+        <option value="Suministros Revestimientos">Suministros Revestimientos</option>
+        <option value="Herramientas">Herramientas</option>
+        <option value="Combustible">Combustible</option>
+        <option value="Otros">Otros</option>
+      </select>
+    </div>
+    <div class="vo-dropzone" id="ga-dropzone">
+      <div class="vo-dropzone-icon">🧾</div>
+      <div class="vo-dropzone-text">Foto de la factura</div>
+      <div class="vo-dropzone-actions">
+        <button type="button" class="vo-dropzone-btn" onclick="document.getElementById('ga-file-input-camara').click()">📷 Hacer foto</button>
+        <button type="button" class="vo-dropzone-btn" onclick="document.getElementById('ga-file-input-galeria').click()">🖼️ Galeria</button>
+      </div>
+      <div class="vo-dropzone-sub">o arrastra aqui desde el carrete</div>
+    </div>
+    <input type="file" id="ga-file-input-camara" accept="image/*" capture="environment" />
+    <input type="file" id="ga-file-input-galeria" accept="image/*" />
+    <div class="vo-preview-grid" id="ga-preview-grid"></div>
+    <button class="vo-btn-subir" id="ga-btn-guardar" disabled onclick="gaGuardarGasto()">Guardar gasto</button>
+    <div class="vo-progress" id="ga-progress">
+      <div class="vo-progress-bar-bg"><div class="vo-progress-bar" id="ga-progress-bar"></div></div>
+      <div class="vo-progress-label" id="ga-progress-label">Guardando...</div>
+    </div>
+    <div class="vo-result" id="ga-result"></div>
+    <div class="section-header" style="margin-top:8px">Historial reciente</div>
+    <div class="vo-historial" id="ga-historial"><div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin gastos registrados aun</div></div>
+  </div>
 </div>
 
 <div class="view" id="view-obras">
@@ -385,6 +434,7 @@ function openModule(id) {
   showView(id);
   if (id === 'visita') voInitView();
   if (id === 'horas') hzInitView();
+  if (id === 'gastos') gaInitView();
 }
 function goBack(target) {
   if (target) { showView(target); return; }
@@ -818,6 +868,208 @@ function hzRenderHistorial() {
   }).join('');
 }
 document.getElementById('hz-obra-select').addEventListener('change', hzActualizarBoton);
+
+// ===== MODULO GASTOS =====
+var GA_KEY_HISTORIAL = 'lyt_ga_historial';
+var gaFoto = null;
+var gaUsuarios = [];
+
+function gaInitView() {
+  var url = voGetUrl();
+  document.getElementById('ga-banner').classList.toggle('show', !url);
+  if (!document.getElementById('ga-fecha-input').value) {
+    document.getElementById('ga-fecha-input').value = new Date().toISOString().slice(0,10);
+  }
+  gaCargarObras();
+  gaCargarUsuarios();
+  gaRenderHistorial();
+  gaActualizarBoton();
+}
+
+function gaCargarObras() {
+  var url = voGetUrl();
+  var select = document.getElementById('ga-obra-select');
+  select.innerHTML = '<option value="">Cargando obras...</option>';
+  fetch(url, {
+    method: 'POST', mode: 'cors', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'obras' })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.ok && data.obras && data.obras.length > 0) {
+      var opts = data.obras.map(function(o) { return '<option value="' + o.nombre + '">' + o.nombre + '</option>'; }).join('');
+      select.innerHTML = '<option value="">-- Selecciona una obra --</option>' + opts;
+    } else {
+      select.innerHTML = '<option value="">Sin obras activas</option>';
+    }
+    gaActualizarBoton();
+  })
+  .catch(function() { select.innerHTML = '<option value="">Error al cargar obras</option>'; });
+}
+
+function gaCargarUsuarios() {
+  var url = voGetUrl();
+  var select = document.getElementById('ga-usuario-select');
+  select.innerHTML = '<option value="">Cargando...</option>';
+  fetch(url, {
+    method: 'POST', mode: 'cors', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'trabajadores' })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    gaUsuarios = (data.ok && data.trabajadores) ? data.trabajadores : [];
+    if (gaUsuarios.length > 0) {
+      select.innerHTML = '<option value="">-- Selecciona --</option>' + gaUsuarios.map(function(t) {
+        return '<option value="' + t.id + '">' + t.nombre + '</option>';
+      }).join('');
+    } else {
+      select.innerHTML = '<option value="">Sin usuarios</option>';
+    }
+  })
+  .catch(function() { select.innerHTML = '<option value="">Error al cargar</option>'; });
+}
+
+function gaHandleFileInputChange(e) {
+  var file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    gaFoto = { file: file, dataUrl: ev.target.result, nombre: file.name };
+    gaRenderPreview();
+    gaActualizarBoton();
+    voGuardarCopiaLocal(file);
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('ga-file-input-camara').addEventListener('change', gaHandleFileInputChange);
+document.getElementById('ga-file-input-galeria').addEventListener('change', gaHandleFileInputChange);
+
+var gaDropzone = document.getElementById('ga-dropzone');
+gaDropzone.addEventListener('dragover', function(e) { e.preventDefault(); gaDropzone.classList.add('drag-over'); });
+gaDropzone.addEventListener('dragleave', function() { gaDropzone.classList.remove('drag-over'); });
+gaDropzone.addEventListener('drop', function(e) {
+  e.preventDefault(); gaDropzone.classList.remove('drag-over');
+  var file = Array.from(e.dataTransfer.files).filter(function(f) { return f.type.startsWith('image/'); })[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    gaFoto = { file: file, dataUrl: ev.target.result, nombre: file.name };
+    gaRenderPreview();
+    gaActualizarBoton();
+  };
+  reader.readAsDataURL(file);
+});
+
+function gaEliminarFoto() {
+  gaFoto = null;
+  gaRenderPreview();
+  gaActualizarBoton();
+}
+
+function gaRenderPreview() {
+  var grid = document.getElementById('ga-preview-grid');
+  if (!gaFoto) { grid.innerHTML = ''; return; }
+  grid.innerHTML = '<div class="vo-preview-item"><img src="' + gaFoto.dataUrl + '" /><button class="vo-preview-remove" onclick="gaEliminarFoto()">X</button></div>';
+}
+
+function gaActualizarBoton() {
+  var btn = document.getElementById('ga-btn-guardar');
+  var obra = document.getElementById('ga-obra-select').value;
+  var proveedor = document.getElementById('ga-proveedor-input').value.trim();
+  var total = parseFloat(document.getElementById('ga-total-input').value);
+  btn.disabled = !obra || !proveedor || !(total > 0) || !gaFoto;
+}
+document.getElementById('ga-obra-select').addEventListener('change', gaActualizarBoton);
+document.getElementById('ga-proveedor-input').addEventListener('input', gaActualizarBoton);
+document.getElementById('ga-total-input').addEventListener('input', gaActualizarBoton);
+
+function gaGuardarGasto() {
+  var url = voGetUrl();
+  var fecha = document.getElementById('ga-fecha-input').value;
+  var obra = document.getElementById('ga-obra-select').value;
+  var usuarioId = document.getElementById('ga-usuario-select').value;
+  var proveedor = document.getElementById('ga-proveedor-input').value.trim();
+  var total = parseFloat(document.getElementById('ga-total-input').value);
+  var categoria = document.getElementById('ga-categoria-select').value;
+  if (!url || !obra || !proveedor || !(total > 0) || !gaFoto) return;
+
+  var btn = document.getElementById('ga-btn-guardar');
+  var progress = document.getElementById('ga-progress');
+  var bar = document.getElementById('ga-progress-bar');
+  var label = document.getElementById('ga-progress-label');
+  var result = document.getElementById('ga-result');
+
+  btn.disabled = true;
+  progress.classList.add('show');
+  result.classList.remove('show');
+  bar.style.width = '30%';
+  bar.style.background = '';
+  label.textContent = 'Guardando gasto...';
+
+  var ext = gaFoto.file.type.split('/')[1] || 'jpg';
+  var fotoPayload = { base64: gaFoto.dataUrl.split(',')[1], mime: gaFoto.file.type, nombre: fecha + '_' + obra.replace(/\s+/g,'-') + '_' + Date.now() + '.' + ext };
+
+  fetch(url, {
+    method: 'POST', mode: 'cors', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'guardarGasto',
+      fecha: fecha,
+      obra: obra,
+      usuarioId: usuarioId,
+      proveedor: proveedor,
+      total: total,
+      categoria: categoria,
+      foto: fotoPayload
+    })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      bar.style.width = '100%';
+      label.textContent = 'Listo!';
+      result.className = 'vo-result ok show';
+      result.innerHTML = 'Gasto guardado: ' + proveedor + ' - ' + total.toFixed(2) + ' EUR.';
+      gaGuardarHistorial({ obra: obra, fecha: fecha, proveedor: proveedor, total: total });
+      gaRenderHistorial();
+      document.getElementById('ga-proveedor-input').value = '';
+      document.getElementById('ga-total-input').value = '';
+      gaFoto = null;
+      gaRenderPreview();
+    } else {
+      throw new Error(data.error || 'Error desconocido');
+    }
+  })
+  .catch(function(err) {
+    bar.style.width = '100%';
+    bar.style.background = '#E24B4A';
+    label.textContent = 'Error';
+    result.className = 'vo-result err show';
+    result.innerHTML = 'Error al guardar el gasto: ' + err.message;
+  })
+  .finally(function() {
+    setTimeout(function() { btn.disabled = false; gaActualizarBoton(); }, 1500);
+  });
+}
+
+function gaGuardarHistorial(entry) {
+  var h = JSON.parse(localStorage.getItem(GA_KEY_HISTORIAL) || '[]');
+  h.unshift(entry);
+  if (h.length > 20) h = h.slice(0,20);
+  localStorage.setItem(GA_KEY_HISTORIAL, JSON.stringify(h));
+}
+
+function gaRenderHistorial() {
+  var h = JSON.parse(localStorage.getItem(GA_KEY_HISTORIAL) || '[]');
+  var el = document.getElementById('ga-historial');
+  if (h.length === 0) { el.innerHTML = '<div style="padding:20px 0;text-align:center;font-size:13px;color:var(--text-3)">Sin gastos registrados aun</div>'; return; }
+  el.innerHTML = h.map(function(e) {
+    return '<div class="vo-historial-item"><div class="vo-historial-thumb">🧾</div><div class="vo-historial-info"><div class="vo-historial-obra">' + e.obra + ' - ' + e.proveedor + '</div><div class="vo-historial-meta">' + e.fecha + ' - ' + e.total.toFixed(2) + ' EUR</div></div></div>';
+  }).join('');
+}
 
 voActualizarEstadoAjustes();
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function(){}); }

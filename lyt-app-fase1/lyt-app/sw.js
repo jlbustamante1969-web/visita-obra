@@ -1,4 +1,4 @@
-var CACHE = 'lyt-v10';
+var CACHE = 'lyt-v11';
 var APP_SHELL = [
   '/visita-obra/lyt-app-fase1/lyt-app/',
   '/visita-obra/lyt-app-fase1/lyt-app/index.html',
