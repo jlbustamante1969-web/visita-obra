@@ -309,20 +309,16 @@
       <input type="date" id="ga-fecha-input" class="hz-date-input" />
     </div>
     <div class="vo-obra-selector">
+      <label>Usuario</label>
+      <select id="ga-usuario-select">
+        <option value="">-- Selecciona --</option>
+        <option value="JOSE CARLOS">JOSE CARLOS</option>
+        <option value="JOSE LUIS">JOSE LUIS</option>
+      </select>
+    </div>
+    <div class="vo-obra-selector">
       <label>Obra</label>
       <select id="ga-obra-select"><option value="">Cargando obras...</option></select>
-    </div>
-    <div class="vo-obra-selector">
-      <label>Usuario</label>
-      <select id="ga-usuario-select"><option value="">Cargando...</option></select>
-    </div>
-    <div class="vo-obra-selector">
-      <label>Proveedor</label>
-      <input type="text" id="ga-proveedor-input" class="hz-date-input" placeholder="Nombre del proveedor" />
-    </div>
-    <div class="vo-obra-selector">
-      <label>Total con IVA</label>
-      <input type="number" id="ga-total-input" class="hz-date-input" min="0" step="0.01" placeholder="0,00" />
     </div>
     <div class="vo-obra-selector">
       <label>Categoria</label>
@@ -342,7 +338,7 @@
         <button type="button" class="vo-dropzone-btn" onclick="document.getElementById('ga-file-input-camara').click()">📷 Hacer foto</button>
         <button type="button" class="vo-dropzone-btn" onclick="document.getElementById('ga-file-input-galeria').click()">🖼️ Galeria</button>
       </div>
-      <div class="vo-dropzone-sub">o arrastra aqui desde el carrete</div>
+      <div class="vo-dropzone-sub">Proveedor y total se leen solos de la foto</div>
     </div>
     <input type="file" id="ga-file-input-camara" accept="image/*" capture="environment" />
     <input type="file" id="ga-file-input-galeria" accept="image/*" />
@@ -872,7 +868,6 @@ document.getElementById('hz-obra-select').addEventListener('change', hzActualiza
 // ===== MODULO GASTOS =====
 var GA_KEY_HISTORIAL = 'lyt_ga_historial';
 var gaFoto = null;
-var gaUsuarios = [];
 
 function gaInitView() {
   var url = voGetUrl();
@@ -881,7 +876,6 @@ function gaInitView() {
     document.getElementById('ga-fecha-input').value = new Date().toISOString().slice(0,10);
   }
   gaCargarObras();
-  gaCargarUsuarios();
   gaRenderHistorial();
   gaActualizarBoton();
 }
@@ -906,29 +900,6 @@ function gaCargarObras() {
     gaActualizarBoton();
   })
   .catch(function() { select.innerHTML = '<option value="">Error al cargar obras</option>'; });
-}
-
-function gaCargarUsuarios() {
-  var url = voGetUrl();
-  var select = document.getElementById('ga-usuario-select');
-  select.innerHTML = '<option value="">Cargando...</option>';
-  fetch(url, {
-    method: 'POST', mode: 'cors', redirect: 'follow',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action: 'trabajadores' })
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-    gaUsuarios = (data.ok && data.trabajadores) ? data.trabajadores : [];
-    if (gaUsuarios.length > 0) {
-      select.innerHTML = '<option value="">-- Selecciona --</option>' + gaUsuarios.map(function(t) {
-        return '<option value="' + t.id + '">' + t.nombre + '</option>';
-      }).join('');
-    } else {
-      select.innerHTML = '<option value="">Sin usuarios</option>';
-    }
-  })
-  .catch(function() { select.innerHTML = '<option value="">Error al cargar</option>'; });
 }
 
 function gaHandleFileInputChange(e) {
@@ -977,24 +948,20 @@ function gaRenderPreview() {
 
 function gaActualizarBoton() {
   var btn = document.getElementById('ga-btn-guardar');
+  var usuario = document.getElementById('ga-usuario-select').value;
   var obra = document.getElementById('ga-obra-select').value;
-  var proveedor = document.getElementById('ga-proveedor-input').value.trim();
-  var total = parseFloat(document.getElementById('ga-total-input').value);
-  btn.disabled = !obra || !proveedor || !(total > 0) || !gaFoto;
+  btn.disabled = !usuario || !obra || !gaFoto;
 }
+document.getElementById('ga-usuario-select').addEventListener('change', gaActualizarBoton);
 document.getElementById('ga-obra-select').addEventListener('change', gaActualizarBoton);
-document.getElementById('ga-proveedor-input').addEventListener('input', gaActualizarBoton);
-document.getElementById('ga-total-input').addEventListener('input', gaActualizarBoton);
 
 function gaGuardarGasto() {
   var url = voGetUrl();
   var fecha = document.getElementById('ga-fecha-input').value;
   var obra = document.getElementById('ga-obra-select').value;
-  var usuarioId = document.getElementById('ga-usuario-select').value;
-  var proveedor = document.getElementById('ga-proveedor-input').value.trim();
-  var total = parseFloat(document.getElementById('ga-total-input').value);
+  var usuario = document.getElementById('ga-usuario-select').value;
   var categoria = document.getElementById('ga-categoria-select').value;
-  if (!url || !obra || !proveedor || !(total > 0) || !gaFoto) return;
+  if (!url || !obra || !usuario || !gaFoto) return;
 
   var btn = document.getElementById('ga-btn-guardar');
   var progress = document.getElementById('ga-progress');
@@ -1007,7 +974,7 @@ function gaGuardarGasto() {
   result.classList.remove('show');
   bar.style.width = '30%';
   bar.style.background = '';
-  label.textContent = 'Guardando gasto...';
+  label.textContent = 'Leyendo la factura...';
 
   var ext = gaFoto.file.type.split('/')[1] || 'jpg';
   var fotoPayload = { base64: gaFoto.dataUrl.split(',')[1], mime: gaFoto.file.type, nombre: fecha + '_' + obra.replace(/\s+/g,'-') + '_' + Date.now() + '.' + ext };
@@ -1019,9 +986,7 @@ function gaGuardarGasto() {
       action: 'guardarGasto',
       fecha: fecha,
       obra: obra,
-      usuarioId: usuarioId,
-      proveedor: proveedor,
-      total: total,
+      usuario: usuario,
       categoria: categoria,
       foto: fotoPayload
     })
@@ -1032,11 +997,11 @@ function gaGuardarGasto() {
       bar.style.width = '100%';
       label.textContent = 'Listo!';
       result.className = 'vo-result ok show';
-      result.innerHTML = 'Gasto guardado: ' + proveedor + ' - ' + total.toFixed(2) + ' EUR.';
+      var proveedor = data.proveedor || 'No detectado';
+      var total = typeof data.total === 'number' ? data.total : 0;
+      result.innerHTML = 'Gasto guardado. Detectado: ' + proveedor + ' - ' + total.toFixed(2) + ' EUR.';
       gaGuardarHistorial({ obra: obra, fecha: fecha, proveedor: proveedor, total: total });
       gaRenderHistorial();
-      document.getElementById('ga-proveedor-input').value = '';
-      document.getElementById('ga-total-input').value = '';
       gaFoto = null;
       gaRenderPreview();
     } else {
