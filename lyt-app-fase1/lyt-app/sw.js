@@ -1,4 +1,4 @@
-var CACHE = 'lyt-v14';
+var CACHE = 'lyt-v15';
 var APP_SHELL = [
   '/visita-obra/lyt-app-fase1/lyt-app/',
   '/visita-obra/lyt-app-fase1/lyt-app/index.html',
@@ -28,6 +28,12 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+  // Peticiones que no son GET (POST al Apps Script, etc.): no las tocamos.
+  // Reenviar un Request con body a traves de e.respondWith(fetch(e.request))
+  // puede colgarse indefinidamente en Chrome/Android (bug conocido) - mejor
+  // dejar que el navegador las gestione directamente, sin pasar por el SW.
+  if (e.request.method !== 'GET') return;
+
   var url = new URL(e.request.url);
 
   // Llamadas al script de Google: siempre red, sin cache

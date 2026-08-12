@@ -444,6 +444,16 @@ function voGetUrl() {
   return saved || SCRIPT_URL;
 }
 
+// fetch con timeout: si el backend no responde en X segundos, se rechaza
+// la promesa en vez de dejar la llamada colgada para siempre (para poder
+// mostrar un error visible en vez de un "Cargando..." infinito).
+function fetchConTimeout(url, options, ms) {
+  var controller = new AbortController();
+  var timer = setTimeout(function() { controller.abort(); }, ms || 20000);
+  return fetch(url, Object.assign({}, options, { signal: controller.signal }))
+    .finally(function() { clearTimeout(timer); });
+}
+
 function voInitView() {
   var url = voGetUrl();
   document.getElementById('vo-banner').classList.toggle('show', !voGetUrl());
@@ -687,41 +697,66 @@ function hzCargarObras() {
   var url = voGetUrl();
   var select = document.getElementById('hz-obra-select');
   select.innerHTML = '<option value="">Cargando obras...</option>';
-  fetch(url, {
+  fetchConTimeout(url, {
     method: 'POST', mode: 'cors', redirect: 'follow',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action: 'obras' })
-  })
+  }, 20000)
   .then(function(res) { return res.json(); })
   .then(function(data) {
     if (data.ok && data.obras && data.obras.length > 0) {
       var opts = data.obras.map(function(o) { return '<option value="' + o.nombre + '">' + o.nombre + '</option>'; }).join('');
       select.innerHTML = '<option value="">-- Selecciona una obra --</option>' + opts;
-    } else {
+    } else if (data.ok) {
       select.innerHTML = '<option value="">Sin obras activas</option>';
+    } else {
+      console.error('hzCargarObras: respuesta con error', data);
+      select.innerHTML = '<option value="">Error al cargar: ' + (data.error || 'desconocido') + '</option>';
     }
     hzActualizarBoton();
   })
-  .catch(function() { select.innerHTML = '<option value="">Error al cargar obras</option>'; });
+  .catch(function(err) {
+    console.error('hzCargarObras: fallo de red o timeout', err);
+    var motivo = (err && err.name === 'AbortError') ? 'tiempo agotado' : (err && err.message) || 'desconocido';
+    select.innerHTML = '<option value="">Error al cargar obras (' + motivo + ')</option>';
+  });
 }
+
+var hzTrabajadoresError = null;
 
 function hzCargarTrabajadores() {
   var url = voGetUrl();
-  fetch(url, {
+  hzTrabajadoresError = null;
+  fetchConTimeout(url, {
     method: 'POST', mode: 'cors', redirect: 'follow',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action: 'trabajadores' })
-  })
+  }, 20000)
   .then(function(res) { return res.json(); })
   .then(function(data) {
-    hzTrabajadores = (data.ok && data.trabajadores) ? data.trabajadores : [];
+    if (data.ok) {
+      hzTrabajadores = data.trabajadores || [];
+    } else {
+      console.error('hzCargarTrabajadores: respuesta con error', data);
+      hzTrabajadores = [];
+      hzTrabajadoresError = data.error || 'desconocido';
+    }
     hzRefrescarSelectsTrabajador();
   })
-  .catch(function() { hzTrabajadores = []; });
+  .catch(function(err) {
+    console.error('hzCargarTrabajadores: fallo de red o timeout', err);
+    hzTrabajadores = [];
+    hzTrabajadoresError = (err && err.name === 'AbortError') ? 'tiempo agotado' : (err && err.message) || 'desconocido';
+    hzRefrescarSelectsTrabajador();
+  });
 }
 
 function hzOpcionesTrabajador() {
-  if (hzTrabajadores.length === 0) return '<option value="">Sin trabajadores</option>';
+  if (hzTrabajadores.length === 0) {
+    return hzTrabajadoresError
+      ? '<option value="">Error al cargar (' + hzTrabajadoresError + ')</option>'
+      : '<option value="">Sin trabajadores</option>';
+  }
   return '<option value="">-- Trabajador --</option>' + hzTrabajadores.map(function(t) {
     return '<option value="' + t.id + '">' + t.nombre + '</option>';
   }).join('');
