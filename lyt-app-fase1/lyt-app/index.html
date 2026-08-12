@@ -686,8 +686,10 @@ function hzInitView() {
   if (!document.getElementById('hz-fecha-input').value) {
     document.getElementById('hz-fecha-input').value = new Date().toISOString().slice(0,10);
   }
-  hzCargarObras();
-  hzCargarTrabajadores();
+  // Se cargan una detras de otra, no a la vez: dos POST simultaneos al
+  // mismo Apps Script pueden competir entre si y hacer que uno se quede
+  // esperando mucho mas de la cuenta.
+  hzCargarObras().finally(hzCargarTrabajadores);
   hzRenderHistorial();
   if (hzFilas.length === 0) hzAnadirFila();
   hzActualizarBoton();
@@ -697,7 +699,7 @@ function hzCargarObras() {
   var url = voGetUrl();
   var select = document.getElementById('hz-obra-select');
   select.innerHTML = '<option value="">Cargando obras...</option>';
-  fetchConTimeout(url, {
+  return fetchConTimeout(url, {
     method: 'POST', mode: 'cors', redirect: 'follow',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action: 'obras' })
