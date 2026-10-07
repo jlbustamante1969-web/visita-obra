@@ -939,38 +939,58 @@ function gaCargarObras() {
   .catch(function() { select.innerHTML = '<option value="">Error al cargar obras</option>'; });
 }
 
+function gaPrepararFoto(file) {
+  gaFoto = null;
+  gaRenderPreview();
+  gaActualizarBoton();
+  var reader = new FileReader();
+  function fallo() {
+    var result = document.getElementById('ga-result');
+    result.className = 'vo-result err show';
+    result.textContent = 'No se puede abrir esta foto. Selecciona una imagen JPEG o vuelve a hacerla con la cámara.';
+  }
+  reader.onerror = fallo;
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onerror = fallo;
+    img.onload = function() {
+      try {
+        var escala = Math.min(1, 2400 / Math.max(img.naturalWidth, img.naturalHeight));
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * escala));
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * escala));
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        gaFoto = { file: { type: 'image/jpeg' }, dataUrl: canvas.toDataURL('image/jpeg', 0.9), nombre: file.name };
+        document.getElementById('ga-result').classList.remove('show');
+        gaRenderPreview();
+        gaActualizarBoton();
+      } catch (err) { fallo(); }
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function gaHandleFileInputChange(e) {
   var file = e.target.files[0];
   e.target.value = '';
   if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(ev) {
-    gaFoto = { file: file, dataUrl: ev.target.result, nombre: file.name };
-    gaRenderPreview();
-    gaActualizarBoton();
-    voGuardarCopiaLocal(file);
-  };
-  reader.readAsDataURL(file);
+  gaPrepararFoto(file);
+  voGuardarCopiaLocal(file);
 }
 document.getElementById('ga-file-input-camara').addEventListener('change', gaHandleFileInputChange);
 document.getElementById('ga-file-input-galeria').addEventListener('change', gaHandleFileInputChange);
-
 var gaDropzone = document.getElementById('ga-dropzone');
 gaDropzone.addEventListener('dragover', function(e) { e.preventDefault(); gaDropzone.classList.add('drag-over'); });
 gaDropzone.addEventListener('dragleave', function() { gaDropzone.classList.remove('drag-over'); });
 gaDropzone.addEventListener('drop', function(e) {
   e.preventDefault(); gaDropzone.classList.remove('drag-over');
   var file = Array.from(e.dataTransfer.files).filter(function(f) { return f.type.startsWith('image/'); })[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(ev) {
-    gaFoto = { file: file, dataUrl: ev.target.result, nombre: file.name };
-    gaRenderPreview();
-    gaActualizarBoton();
-  };
-  reader.readAsDataURL(file);
+  if (file) gaPrepararFoto(file);
 });
-
 function gaEliminarFoto() {
   gaFoto = null;
   gaRenderPreview();
@@ -1050,7 +1070,9 @@ function gaGuardarGasto() {
     bar.style.background = '#E24B4A';
     label.textContent = 'Error';
     result.className = 'vo-result err show';
-    result.innerHTML = 'Error al guardar el gasto: ' + err.message;
+    result.textContent = err.message === 'Failed to fetch'
+      ? 'Se perdió la conexión y no se pudo confirmar el guardado. Comprueba en Notion si el gasto existe antes de repetirlo.'
+      : 'Error al guardar el gasto: ' + err.message;
   })
   .finally(function() {
     setTimeout(function() { btn.disabled = false; gaActualizarBoton(); }, 1500);
